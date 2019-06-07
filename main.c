@@ -226,6 +226,7 @@ int main(void)
 	currentPosition.displayLevel = COMPANY_ICON_POSITION;
 	currentPosition.lineNumber   = INLET_LINENUM;
 	updateDisplayPosition = true;
+	//Disable all the alarms
 	for (int i = 0; i < NUMBER_OF_ALARMS; i++)
 	{
 		alarmOutput[i] = 0;
@@ -354,7 +355,7 @@ int main(void)
 				goToBootload = FALSE;
 				bootLoadCount = 0;
 				TI1_125us_Disable(); 	//disable timer to prevent unexpected interrupts
-				setupBootLoad();
+				setupBootLoad(); //soft reset
 			}
 		}
 		else

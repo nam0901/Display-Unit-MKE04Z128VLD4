@@ -21,6 +21,7 @@ void setupBootLoad(void)
 {
 	IFsh1_EraseSector(LAUNCH_CODE_SEGMENT);
 
+	//Soft reset
 	// Force the system to reset
 	SCB_AIRCR = SCB_AIRCR_VECTKEY(0x05FA) | SCB_AIRCR_SYSRESETREQ_MASK;
 

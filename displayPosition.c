@@ -247,7 +247,7 @@ void mainMenuPosition(void)
 		switch (currentPosition.lineNumber)
 		{
 			case 1:
-				if (modbus_rw_coil_rcv[PASSWORD_ENABLED/8] & PASSWORD_ENABLED_F)
+				if (modbus_rw_coil_rcv[PASSWORD_ENABLED/8] & PASSWORD_ENABLED_F) //probe 2 present
 				{
 					userInput = 0;
 					currentPosition.displayLevel = USER_PASSWORD_POSITION;
@@ -278,7 +278,10 @@ void mainMenuPosition(void)
 		releasedUp = false;
 		switch (currentPosition.lineNumber)
 		{
-		case 1: case 2:
+		case 1:
+			currentPosition.lineNumber = COIL_LINENUM;
+			break;
+		case 2:
 			currentPosition.lineNumber = INLET_LINENUM;
 			break;
 
@@ -298,8 +301,11 @@ void mainMenuPosition(void)
 			currentPosition.lineNumber = OUTLET_LINENUM;
 			break;
 
-		case 2: case 3:
+		case 2:
 			currentPosition.lineNumber = COIL_LINENUM;
+			break;
+		case 3:
+			currentPosition.lineNumber = INLET_LINENUM;
 			break;
 
 		default: break;
@@ -515,10 +521,13 @@ void userInterfacePosition(void)
 		{
 			currentPosition.lineNumber -= 1;
 		}
-		else
-		{
-			currentPosition.lineNumber = 1;
+		else if(currentPosition.lineNumber == 1){
+			currentPosition.lineNumber = 8;
 		}
+//		else
+//		{
+//			currentPosition.lineNumber = 1;
+//		}
 	}
 	else if (releasedDown)
 	{
@@ -531,7 +540,7 @@ void userInterfacePosition(void)
 			}
 			else
 			{
-				currentPosition.lineNumber = 10;
+				currentPosition.lineNumber = 1; //from 10
 			}
 		}
 		else //heater not present
@@ -542,7 +551,7 @@ void userInterfacePosition(void)
 			}
 			else
 			{
-				currentPosition.lineNumber = 8;
+				currentPosition.lineNumber = 1; //from 8
 			}
 		}
 	}
@@ -642,10 +651,11 @@ void systemInterfacePosition(void)
 		{
 			currentPosition.lineNumber -= 1;
 		}
-		else
-		{
-			currentPosition.lineNumber = 1;
+		else{
+			currentPosition.lineNumber = 8;
+			//			currentPosition.lineNumber = 1;
 		}
+
 	}
 	else if (releasedDown)
 	{
@@ -656,7 +666,8 @@ void systemInterfacePosition(void)
 		}
 		else
 		{
-			currentPosition.lineNumber = 8;
+//			currentPosition.lineNumber = 8;
+			currentPosition.lineNumber = 1;
 		}
 	}
 }

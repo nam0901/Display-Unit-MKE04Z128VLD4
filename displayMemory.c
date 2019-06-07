@@ -1382,6 +1382,7 @@ void doScrolling(const unsigned char textZero[], const unsigned char textOne[], 
 		else			{scroll[k] = FALSE;}
 	}
 
+	//If it is not Chinese
 	if(scroll[3])
 	{
 		if(scrollingDelay[3] == tloop)
@@ -2069,7 +2070,7 @@ void tempScaleDisplayMemory(void)
 		{
 			switch(currentLanguage)
 			{
-				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
+				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
 					cat(currentTextTable[TEXT_INDEX_TempScaleIsSetTo],
 						currentTextTable[TEXT_INDEX_Celsius],
 						NOVALUE,
@@ -2127,7 +2128,7 @@ void hysteresisDisplayMemory(void)
 		{
 			switch(currentLanguage)
 			{
-				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
+				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
 					cat(currentTextTable[TEXT_INDEX_DifferentialIsSetTo],
 						currentTextTable[TEXT_INDEX_Negative],
 						NOVALUE,
@@ -2144,7 +2145,7 @@ void hysteresisDisplayMemory(void)
 		{
 			switch(currentLanguage)
 			{
-				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
+				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
 					cat(currentTextTable[TEXT_INDEX_DifferentialIsSetTo],
 						currentTextTable[TEXT_INDEX_Positive],
 						NOVALUE,
@@ -2204,7 +2205,7 @@ void languageDisplayMemory(void)
 	{
 		switch(currentLanguage)
 		{
-			case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
+			case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
 		    	displayTextInMultipleLines(currentTextTable[TEXT_INDEX_UpdatingLanguageSettings], arial14, &pgg, &ncol, false);
 				break;
 			case CHINESE:
@@ -2277,7 +2278,7 @@ void passwordDisplayMemory(void)
 		{
 			switch(currentLanguage)
 			{
-				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
+				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
 					displayTextInMultipleLines(currentTextTable[TEXT_INDEX_PasscodeForUserInterfaceIsOn], arial14, &pgg, &ncol, false);
 					break;
 				case CHINESE:
@@ -2291,7 +2292,7 @@ void passwordDisplayMemory(void)
 		{
 			switch(currentLanguage)
 			{
-				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
+				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
 					displayTextInMultipleLines(currentTextTable[TEXT_INDEX_PasscodeForUserInterfaceIsOff], arial14, &pgg, &ncol, false);
 					break;
 				case CHINESE:

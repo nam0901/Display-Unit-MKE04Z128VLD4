@@ -30,7 +30,7 @@
 #define I2CDATABUFFER_RANGE_ERROR	0
 #define I2CDATABUFFER_RANGE_OK		1
 
-#define PAGE_NUM_MIN        0
+#define PAGE_NUM_MIN        0 //Row = page number
 #define PAGE_NUM_MAX		7
 #define COLUMN_NUM_MIN      0
 #define COLUMN_NUM_MAX      127
