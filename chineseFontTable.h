@@ -30,7 +30,12 @@ extern const char timeTextChinese[];
 
 extern const char confirmationTextChinese[];
 extern const char languageConformationChinese[];
+
 extern const char groupControlModeChinese[];
+extern const char modeControlModeChinese[];
+extern const char masterSlaveControlModeChinese[]; //For Mode Settings
+extern const char leadLagControlModeChinese[]; //For Mode Settings
+
 
 // Alarms
 extern const char highTempChinese[];

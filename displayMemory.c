@@ -21,6 +21,7 @@ byte modbus_rw_coil_rcv[RW_COIL_LEN/8+1];					// read/write coils controller cop
 int pgg;
 int ncol;
 _Bool isInDegradedMode;
+int maxIndex = 0;
 
 /* ---------------------------------------------------------------------------------Function Prototypes Opening---------------------------------------------------------------------------------*/
 /*********************************************************************Main Screen Display Routines and its Helper Routines Opening***************************************************************/
@@ -134,6 +135,7 @@ void checkDisplayMemory(void)
 			case GERMAN:	currentTextTable = germanText;	break;
 			case SPANISH:	currentTextTable = spanishText;	break;
 			case ITALIAN:	currentTextTable = italianText; break;
+			case POLISH: 	currentTextTable = polishText; break;
 			//add chinese language
 			default: break;
 		}
@@ -185,8 +187,8 @@ void checkDisplayMemory(void)
 			case GROUP_CONTROL_MODE_POSITION:			groupControlModeDisplayMemory();		break;
 			case MODE_POSITION:							modeDisplayMemory();					break;
 			case STAND_ALONE_MODE_POSITION:				standAloneModeDisplayMemory();			break;
-			case LEAD_LAG_MODE_POSITION:				leadLagModeDisplayMemory();				break;
-			case MASTER_SLAVE_MODE_POSITION:			masterSlaveModeDisplayMemory();			break;
+			case LEAD_LAG_MODE_POSITION:				leadLagModeDisplayMemory();				break; //To-do
+			case MASTER_SLAVE_MODE_POSITION:			masterSlaveModeDisplayMemory();			break; //To-do
 			case UNIT_IDENTIFICATION_POSITION:			unitIdentificationDisplayMemory();		break;
 			case DIFFERENTIAL_2_POSITION:				differential2DisplayMemory();			break;
 			case CONTROL_STRATEGY_POSITION:				controlStrategyDisplayMemory();			break;
@@ -1389,7 +1391,12 @@ void doScrolling(const unsigned char textZero[], const unsigned char textOne[], 
 		{
 			scrollingDelay[3] = 0;
 			scrollingIndex[3]++;
-			if(scrollingIndex[3] == col[3]-120){scrollingIndex[3] = 0;}
+			//Can make it circular display
+			if(scrollingIndex[3] == col[3]-120)
+			{
+				scrollingIndex[3] = 0;
+
+			}
 		}
 		displayTextInOneLineScrolling(textZero, arial14, 0, 10, scrollingIndex[3], 1);
 		scrollingDelay[3]++;
@@ -1434,7 +1441,12 @@ void doScrolling(const unsigned char textZero[], const unsigned char textOne[], 
 				{
 					scrollingDelay[1] = 0;
 					scrollingIndex[1]++;
-					if(scrollingIndex[1] > col[1]-120){scrollingIndex[1] = 0;} //can make it circular display
+					if(scrollingIndex[1] > col[1]-120)
+					{
+						scrollingIndex[1] = 0;
+						//scrollingIndex[1] = col[1] - 120;
+
+					} //can make it circular display
 				}
 				displayTextInOneLineScrolling(textTwo, arial14, 4, 10, scrollingIndex[1], 0);
 				scrollingDelay[1]++;
@@ -1457,8 +1469,10 @@ void doScrolling(const unsigned char textZero[], const unsigned char textOne[], 
 				{
 					scrollingDelay[2] = 0;
 					scrollingIndex[2]++;
-					if(scrollingIndex[2] > col[2]-120){scrollingIndex[2] = 0;}
-				}
+					if(scrollingIndex[2] > col[2]-120)
+					{
+						scrollingIndex[2] = 0;}
+					}
 				displayTextInOneLineScrolling(textThree, arial14, 6, 10, scrollingIndex[2], 0);
 				scrollingDelay[2]++;
 			}
@@ -2452,13 +2466,13 @@ void modeDisplayMemory(void)
 		{
 			switch(currentPosition.lineNumber)
 			{
-				case INLET_LINENUM:
+				case INLET_LINENUM: //stand-alone mode
 					displayTextInMultipleLines(currentTextTable[TEXT_INDEX_GCMIsSetToSA], arial14, &pgg, &ncol, false);
 					break;
-				case OUTLET_LINENUM:
+				case OUTLET_LINENUM: //lead/lag mode
 					displayTextInMultipleLines(currentTextTable[TEXT_INDEX_GCMIsSetToLL], arial14, &pgg, &ncol, false);
 					break;
-				case COIL_LINENUM:
+				case COIL_LINENUM: //master/slave
 					displayTextInMultipleLines(currentTextTable[TEXT_INDEX_GCMIsSetToMS], arial14, &pgg, &ncol, false);
 					break;
 				default: break;
@@ -2469,17 +2483,17 @@ void modeDisplayMemory(void)
 		{
 			switch(currentPosition.lineNumber)
 			{
-				case INLET_LINENUM:
+				case INLET_LINENUM: //stand-alone mode
 					displayChineseTextInOneLine(groupControlModeChinese, 0, 1, 0, 2, MENU_ITEM_START_COLUMN);	//group control mode
 					displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
-					displayChineseTextInOneLine(groupControlModeChinese, 6, 7, 0, 6, MENU_ITEM_START_COLUMN);	//stand-alone
+					displayChineseTextInOneLine(groupControlModeChinese, 6, 7, 0, 6, MENU_ITEM_START_COLUMN);	    //stand-alone
 					break;
-				case OUTLET_LINENUM:
+				case OUTLET_LINENUM: //lead/lag mode
 					displayChineseTextInOneLine(groupControlModeChinese, 0, 1, 0, 2, MENU_ITEM_START_COLUMN);	//group control mode
 					displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
-					displayChineseTextInOneLine(groupControlModeChinese, 8, 9, 0, 6, MENU_ITEM_START_COLUMN);	//lead/lag
+					displayChineseTextInOneLine(groupControlModeChinese, 8, 9, 0, 6, MENU_ITEM_START_COLUMN);	    //lead/lag
 					break;
-				case COIL_LINENUM:
+				case COIL_LINENUM: //master/slave
 					displayChineseTextInOneLine(groupControlModeChinese, 0, 1, 0, 2, MENU_ITEM_START_COLUMN);	//group control mode
 					displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
 					displayChineseTextInOneLine(groupControlModeChinese, 10, 11, 0, 6, MENU_ITEM_START_COLUMN);	// master/slave
@@ -2529,8 +2543,8 @@ void standAloneModeDisplayMemory(void)
 	}
 	else
 	{
-		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 12, 13, 0, 0, 10);	//stand alone mode
-		displayChineseTextInOneLine(groupControlModeChinese, 14, 15, 0, 2, MENU_ITEM_START_COLUMN);	//no settings
+		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 12, 13, 0, 0, MENU_ITEM_START_COLUMN);	//stand alone mode
+		displayChineseTextInOneLine(standAloneModeChinese, 14, 15, 0, 2, MENU_ITEM_START_COLUMN);	//no settings
 	}
 	showSelectArrow();
 }
@@ -2557,10 +2571,10 @@ void leadLagModeDisplayMemory(void)
 	}
 	else
 	{
-		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 16, 17, 0, 0, 10);	//lead/lag mode
-		displayChineseTextInOneLine(groupControlModeChinese, 18, 19, 0, 2, 10);	//unit identification
-		displayChineseTextInOneLine(groupControlModeChinese, 20, 21, 0, 4, 10);	//differential two
-		displayChineseTextInOneLine(groupControlModeChinese, 22, 23, 0, 6, 10);	//control strategy
+		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 16, 17, 0, 0, MENU_ITEM_START_COLUMN);	//lead/lag mode      //10 for the last arguement
+		displayChineseTextInOneLine(groupControlModeChinese, 18, 19, 0, 2, MENU_ITEM_START_COLUMN);	//unit identification
+		displayChineseTextInOneLine(leadLagControlModeChinese, 20, 21, 0, 4, MENU_ITEM_START_COLUMN);	//differential two
+		displayChineseTextInOneLine(leadLagControlModeChinese, 22, 23, 0, 6, MENU_ITEM_START_COLUMN);	//control strategy
 	}
 	showSelectArrow();
 	SysIntArrowPosition = true;
@@ -2588,9 +2602,9 @@ void masterSlaveModeDisplayMemory(void)
 	}
 	else
 	{
-		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 24, 25, 0, 0, 10);	//master/slave mode
-		displayChineseTextInOneLine(groupControlModeChinese, 18, 19, 0, 2, 10);	//unit identification
-		displayChineseTextInOneLine(groupControlModeChinese, 26, 27, 0, 4, 10);	//number of units
+		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 24, 25, 0, 0, MENU_ITEM_START_COLUMN);	//master/slave mode   //10 for the last arguement
+		displayChineseTextInOneLine(groupControlModeChinese, 18, 19, 0, 2, MENU_ITEM_START_COLUMN);	//unit identification
+		displayChineseTextInOneLine(masterSlaveControlModeChinese, 26, 27, 0, 4, MENU_ITEM_START_COLUMN);	//number of units
 	}
 	SysIntArrowPosition = true;
 	showSelectArrow();
@@ -2672,7 +2686,7 @@ void differential2DisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLine(groupControlModeChinese, 20, 21, 0, 2, 10); 	//differential two
+			displayChineseTextInOneLine(leadLagControlModeChinese, 20, 21, 0, 2, 10); 	//differential two
 			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
 //			displayChineseTextInOneLine(userInterfaceChinese, 4, 8, 0, 2, 10);
 //			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 2, 80);
@@ -2702,7 +2716,7 @@ void differential2DisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLineHighlighted(groupControlModeChinese, 20, 21, 0, 0, 10);	//differential two
+			displayChineseTextInOneLineHighlighted(leadLagControlModeChinese, 20, 21, 0, 0, 10);	//differential two
 		}
 		showTempReading(userInput, 3, 100);
 	}
@@ -2740,7 +2754,7 @@ void controlStrategyDisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLine(groupControlModeChinese, 22, 23, 0, 2, 10);	//control strategy
+			displayChineseTextInOneLine(leadLagControlModeChinese, 22, 23, 0, 2, 10);	//control strategy
 			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
 			int digit = modbus_rw_reg_rcv[CONTROL_STRATEGY].ivalue;
 			drawDigit(digitCourier2x7, digit/10, 2, 7, 4, 60);
@@ -2771,7 +2785,7 @@ void controlStrategyDisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLineHighlighted(groupControlModeChinese, 22, 23, 0, 0, 10);	//control strategy
+			displayChineseTextInOneLineHighlighted(leadLagControlModeChinese, 22, 23, 0, 0, 10);	//control strategy
 		}
 		drawIntegerLeftAligned(digitCalibriLight4x28, userInput, 4, 28, 3, 36);
 	}
@@ -2808,7 +2822,7 @@ void numberOfUnitsDisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLine(groupControlModeChinese, 26, 27, 0, 2, 10);	//number of units
+			displayChineseTextInOneLine(masterSlaveControlModeChinese, 26, 27, 0, 2, 10);	//number of units
 			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
 			int digit = modbus_rw_reg_rcv[GROUP_CONTROL_SIZE].ivalue;
 			drawDigit(digitCourier2x7, digit/10, 2, 7, 4, 60);
@@ -2825,7 +2839,7 @@ void numberOfUnitsDisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLineHighlighted(groupControlModeChinese, 26, 27, 0, 0, 10);	//number of units
+			displayChineseTextInOneLineHighlighted(masterSlaveControlModeChinese, 26, 27, 0, 0, 10);	//number of units
 		}
 		drawIntegerLeftAligned(digitCalibriLight4x28, userInput, 4, 28, 3, 36);
 	}

@@ -78,7 +78,7 @@
 
 // Firmware & Hardware Versions
 #define DU_FIRMWARE_VERSION_MAJOR	'1'
-#define DU_FIRMWARE_VERSION_MINOR	'3'
+#define DU_FIRMWARE_VERSION_MINOR	'5'
 #define DU_HARDWARE_VERSION_MAJOR	'5'
 #define DU_HARDWARE_VERSION_MINOR	'0'
 

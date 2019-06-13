@@ -23,7 +23,7 @@ static void userInterfacePosition(void);
 static void systemInterfacePosition(void);
 static void enterPasswordPosition(void);
 static void aboutMenuPosition(void);
-static void versionNumberMenuPosition(void);
+//static void versionNumberMenuPosition(void);
 
 static void turnOnAllPixelsPosition(void);
 
@@ -65,6 +65,7 @@ static void malfDeactivatePosition(void);
 static void malfActivatePosition(void);
 static void hpcFanOnPosition(void);
 static void hpcFanOffPosition(void);
+static void numberOfUnitsPoFsition(void);
 
 void checkDisplayPosition(void)
 {
@@ -128,8 +129,8 @@ void checkDisplayPosition(void)
 			case GROUP_CONTROL_MODE_POSITION:		groupControlModePosition();		break;
 			case MODE_POSITION:						modePosition();					break;
 			case STAND_ALONE_MODE_POSITION:			standAloneModePosition();		break;
-			case LEAD_LAG_MODE_POSITION:			leadLagModePosition();			break;
-			case MASTER_SLAVE_MODE_POSITION:		masterSlaveModePosition();		break;
+			case LEAD_LAG_MODE_POSITION:			leadLagModePosition();			break; //TO-DO
+			case MASTER_SLAVE_MODE_POSITION:		masterSlaveModePosition();		break; //TO-DO
 			case UNIT_IDENTIFICATION_POSITION:		unitIdentificationPosition();	break;
 			case DIFFERENTIAL_2_POSITION:			differential2Position();		break;
 			case NUMBER_OF_UNITS_POSITION:			numberOfUnitsPosition();		break;
@@ -1767,7 +1768,12 @@ void tempScalePosition(void)
 		releasedUp = false;
 		if(!isInDegradedMode)
 		{
-			currentPosition.lineNumber = 1;
+			if(currentPosition.lineNumber == 1){
+				currentPosition.lineNumber = 2;
+			}else{
+				currentPosition.lineNumber = 1;
+			}
+
 		}
 	}
 	else if (releasedDown)
@@ -1775,7 +1781,12 @@ void tempScalePosition(void)
 		releasedDown = false;
 		if(!isInDegradedMode)
 		{
-			currentPosition.lineNumber = 2;
+			if(currentPosition.lineNumber == 2){
+				currentPosition.lineNumber = 1;
+			}else{
+				currentPosition.lineNumber = 2;
+			}
+
 		}
 	}
 }
@@ -1828,7 +1839,12 @@ void hysteresisPosition(void)
     	// if not in degraded mode, allow users to adjust
     	if (!isInDegradedMode)
     	{
-    		currentPosition.lineNumber = 1;
+    		if(currentPosition.lineNumber == 1){
+    			currentPosition.lineNumber = 2;
+    		}else{
+    			currentPosition.lineNumber = 1;
+    		}
+
     	}
 	}
 	else if (releasedDown)
@@ -1837,7 +1853,12 @@ void hysteresisPosition(void)
     	// if not in degraded mode, allow users to adjust
     	if (!isInDegradedMode)
     	{
-    		currentPosition.lineNumber = 2;
+    		if(currentPosition.lineNumber == 2){
+    			currentPosition.lineNumber = 1;
+    		}else{
+    			currentPosition.lineNumber = 2;
+    		}
+
     	}
 	}
 }
@@ -1868,6 +1889,10 @@ void languagePosition(void)
 			currentTextTable = englishText;
 			break;
 
+		case CHINESE:
+			currentLanguage = CHINESE;
+			break;
+
 		case FRENCH:
 			currentTextTable = frenchText;
 			break;
@@ -1882,9 +1907,7 @@ void languagePosition(void)
 		case ITALIAN:
 			currentTextTable = italianText;
 			break;
-		case POLISH:
-			currentTextTable = polishText;
-			break;
+
 
 		default: break;
 		}
@@ -1904,11 +1927,13 @@ void languagePosition(void)
 		if (currentPosition.lineNumber > 1)
 		{
 			currentPosition.lineNumber -= 1;
+		}else if(currentPosition.lineNumber == 1){
+			currentPosition.lineNumber = 6;
 		}
-		else
-		{
-			currentPosition.lineNumber = 1;
-		}
+//		else
+//		{
+//			currentPosition.lineNumber = 1;
+//		}
 	}
 	else if (releasedDown)
 	{
@@ -1917,10 +1942,13 @@ void languagePosition(void)
 		{
 			currentPosition.lineNumber += 1;
 		}
-		else
-		{
-			currentPosition.lineNumber = 6;
+		else if(currentPosition.lineNumber == 6){
+			currentPosition.lineNumber = 1;
 		}
+//		else
+//		{
+//			currentPosition.lineNumber = 7;
+//		}
 	}
 }
 
@@ -1965,12 +1993,23 @@ void passwordPosition(void)
 	else if (releasedUp)
 	{
 		releasedUp = false;
-		currentPosition.lineNumber = 1;
+//		currentPosition.lineNumber = 1;
+		if(currentPosition.lineNumber == 1){
+			currentPosition.lineNumber = 2;
+		}else{
+			currentPosition.lineNumber = 1;
+		}
 	}
 	else if (releasedDown)
 	{
 		releasedDown = false;
-		currentPosition.lineNumber = 2;
+//		currentPosition.lineNumber = 2;
+		if(currentPosition.lineNumber == 2){
+			currentPosition.lineNumber = 1;
+		}else{
+			currentPosition.lineNumber = 2;
+		}
+
 	}
 }
 
@@ -2034,12 +2073,32 @@ void groupControlModePosition(void)
 	else if(releasedUp)
 	{
 		releasedUp = false;
-		currentPosition.lineNumber = INLET_LINENUM;
+		switch(currentPosition.lineNumber)
+		{
+			case 1:
+				currentPosition.lineNumber =  OUTLET_LINENUM;
+				break;
+
+			case 2:
+				currentPosition.lineNumber = INLET_LINENUM;
+				break;
+
+		}
 	}
 	else if (releasedDown)
 	{
 		releasedDown = false;
-		currentPosition.lineNumber = OUTLET_LINENUM;
+		switch(currentPosition.lineNumber)
+		{
+			case 1:
+				currentPosition.lineNumber =  OUTLET_LINENUM;
+				break;
+
+			case 2:
+				currentPosition.lineNumber = INLET_LINENUM;
+				break;
+		}
+//		currentPosition.lineNumber = OUTLET_LINENUM;
 	}
 }
 
@@ -2099,7 +2158,10 @@ void modePosition(void)
 		releasedUp = false;
 		switch(currentPosition.lineNumber)
 		{
-		case 1: case 2:
+		case 1:
+			currentPosition.lineNumber = COIL_LINENUM;
+			break;
+		case 2:
 			currentPosition.lineNumber = INLET_LINENUM;
 			break;
 
@@ -2119,15 +2181,19 @@ void modePosition(void)
 			currentPosition.lineNumber = OUTLET_LINENUM;
 			break;
 
-		case 2: case 3:
+		case 2:
 			currentPosition.lineNumber = COIL_LINENUM;
 			break;
+
+		case 3:
+			currentPosition.lineNumber = INLET_LINENUM;
 
 		default: break;
 		}
 	}
 }
 
+//No settings
 void standAloneModePosition(void)
 {
 	if(releasedBack)
@@ -2139,14 +2205,18 @@ void standAloneModePosition(void)
 	else if(releasedOK)
 	{
 		releasedOK = false;
+
 	}
 	else if(releasedUp)
 	{
 		releasedUp = false;
+		//Nothing show as there is no settings
+
 	}
 	else if(releasedDown)
 	{
 		releasedDown = false;
+		//Nothing show
 	}
 }
 
@@ -2164,16 +2234,19 @@ void leadLagModePosition(void)
 		switch(currentPosition.lineNumber)
 		{
 		case 1:
+			//Unit identification
 			currentPosition.displayLevel = UNIT_IDENTIFICATION_POSITION;
 			userInput = modbus_rw_reg_rcv[UNIT_ID].ivalue;
 			break;
 		case 2:
+			//differential 2 mode
 			currentPosition.displayLevel = DIFFERENTIAL_2_POSITION;
 			userInput = modbus_rw_reg_rcv[COOLING_DIF_2].ivalue;
 			uint16 uart_write_return;
 			uart_write_return = display_uart_update(REGISTER, RW_REG_START + COOLING_DIF_2_MAX, false, 20, COOLING_DIF_2_MAX_F, 0);
 			break;
 		case 3:
+			//control strategy
 			currentPosition.displayLevel = CONTROL_STRATEGY_POSITION;
 			userInput = modbus_rw_reg_rcv[CONTROL_STRATEGY].ivalue;
 			break;
@@ -2185,7 +2258,10 @@ void leadLagModePosition(void)
 		releasedUp = false;
 		switch(currentPosition.lineNumber)
 		{
-			case 1: case 2:
+			case 1:
+				currentPosition.lineNumber = COIL_LINENUM;
+				break;
+			case 2:
 				currentPosition.lineNumber = INLET_LINENUM;
 				break;
 			case 3:
@@ -2202,8 +2278,11 @@ void leadLagModePosition(void)
 			case 1:
 				currentPosition.lineNumber = OUTLET_LINENUM;
 				break;
-			case 2: case 3:
+			case 2:
 				currentPosition.lineNumber = COIL_LINENUM;
+				break;
+			case 3:
+				currentPosition.lineNumber = INLET_LINENUM;
 				break;
 			default: break;
 		}
@@ -2344,6 +2423,7 @@ void unitIdentificationPosition(void)
 		}
 	}
 }
+
 
 void differential2Position(void)
 {
@@ -2541,6 +2621,7 @@ void controlStrategyPosition(void)
 			{
 				userInput += 1;
 			}
+
 			else
 			{
 				userInput = 24;
@@ -2784,12 +2865,23 @@ void doorSwitchPosition(void)
 	else if (releasedUp)
 	{
 		releasedUp = false;
-		currentPosition.lineNumber = INLET_LINENUM;
+//		currentPosition.lineNumber = INLET_LINENUM;
+		if(currentPosition.lineNumber == 1){
+			currentPosition.lineNumber = 2;
+		}else{
+			currentPosition.lineNumber = 1;
+		}
 	}
 	else if (releasedDown)
 	{
 		releasedDown = false;
-		currentPosition.lineNumber = OUTLET_LINENUM;
+//		currentPosition.lineNumber = OUTLET_LINENUM;
+		if(currentPosition.lineNumber == 2){
+			currentPosition.lineNumber = 1;
+		}else{
+			currentPosition.lineNumber = 2;
+		}
+
 	}
 }
 
@@ -2826,12 +2918,22 @@ void disableSwitchAlarmPosition(void)
 	else if (releasedUp)
 	{
 		releasedUp = false;
-		currentPosition.lineNumber = 1;
+//		currentPosition.lineNumber = 1;
+		if(currentPosition.lineNumber == 1){
+			currentPosition.lineNumber = 2;
+		}else{
+			currentPosition.lineNumber = 1;
+		}
 	}
 	else if (releasedDown)
 	{
 		releasedDown = false;
-		currentPosition.lineNumber = 2;
+//		currentPosition.lineNumber = 2;
+		if(currentPosition.lineNumber == 2){
+			currentPosition.lineNumber = 1;
+		}else{
+			currentPosition.lineNumber = 2;
+		}
 	}
 }
 
@@ -2868,12 +2970,22 @@ void alarmRelayOutputPosition(void)
 	else if (releasedUp)
 	{
 		releasedUp = false;
-		currentPosition.lineNumber = 1;
+//		currentPosition.lineNumber = 1;
+		if(currentPosition.lineNumber == 1){
+			currentPosition.lineNumber = 2;
+		}else{
+			currentPosition.lineNumber = 1;
+		}
 	}
 	else if (releasedDown)
 	{
 		releasedDown = false;
-		currentPosition.lineNumber = 2;
+//		currentPosition.lineNumber = 2;
+		if(currentPosition.lineNumber == 2){
+			currentPosition.lineNumber = 1;
+		}else{
+			currentPosition.lineNumber = 2;
+		}
 	}
 }
 
@@ -3005,12 +3117,23 @@ void evapOutTempSensorPosition(void)
 		else if (releasedUp)
 		{
 			releasedUp = false;
-			currentPosition.lineNumber = 1;
+//			currentPosition.lineNumber = 1;
+			if(currentPosition.lineNumber == 1){
+				currentPosition.lineNumber = 2;
+			}else{
+				currentPosition.lineNumber = 1;
+			}
 		}
 		else if (releasedDown)
 		{
 			releasedDown = false;
-			currentPosition.lineNumber = 2;
+//			currentPosition.lineNumber = 2;
+			if(currentPosition.lineNumber == 2){
+				currentPosition.lineNumber = 1;
+			}else{
+				currentPosition.lineNumber = 2;
+			}
+
 		}
 }
 
@@ -3058,6 +3181,9 @@ void systemSettingsPosition(void)
 		{
 			currentPosition.lineNumber -= 1;
 		}
+		else if(currentPosition.lineNumber == 1){
+			currentPosition.lineNumber = 5;
+		}
 	}
 	else if (releasedDown)
 	{
@@ -3065,7 +3191,10 @@ void systemSettingsPosition(void)
 		if (currentPosition.lineNumber < 5)
 		{
 			currentPosition.lineNumber += 1;
+		}else if(currentPosition.lineNumber == 5){
+			currentPosition.lineNumber = 1;
 		}
+
 	}
 }
 

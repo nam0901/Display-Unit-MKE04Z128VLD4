@@ -21,6 +21,7 @@ extern int userInput;
 extern _Bool parameterIsSet;
 extern _Bool updateDisplayMemory;
 extern _Bool refreshScreen;
+extern int maxIndex;
 _Bool SysIntArrowPosition; //need this to adjust the arrow to make more space to fit "comp restart delay" in French in one line in System Interface;
 _Bool SysSettingArrowPosition; //need this to adjust the arrow position to make the "MALF Deactivate" in French fit into one line in System Settings
 
