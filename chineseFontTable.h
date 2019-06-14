@@ -33,6 +33,7 @@ extern const char languageConformationChinese[];
 
 extern const char groupControlModeChinese[];
 extern const char modeControlModeChinese[];
+extern const char standAloneModeChinese[]; //For Mode settings
 extern const char masterSlaveControlModeChinese[]; //For Mode Settings
 extern const char leadLagControlModeChinese[]; //For Mode Settings
 

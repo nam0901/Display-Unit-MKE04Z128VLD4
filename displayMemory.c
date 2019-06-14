@@ -2439,7 +2439,7 @@ void groupControlModeDisplayMemory(void)
 	else
 	{
 		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 0, 1, 0, 0, MENU_ITEM_START_COLUMN);	//group control mode
-		displayChineseTextInOneLine(groupControlModeChinese, 2, 3, 0, 2, MENU_ITEM_START_COLUMN);				//mode
+		displayChineseTextInOneLine(groupControlModeChinese, 1, 2, 0, 2, MENU_ITEM_START_COLUMN);				//mode
 		displayChineseTextInOneLine(groupControlModeChinese, 4, 5, 0, 4, MENU_ITEM_START_COLUMN);				//mode settings
 	}
 	SysIntArrowPosition = true;
@@ -2571,7 +2571,7 @@ void leadLagModeDisplayMemory(void)
 	}
 	else
 	{
-		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 16, 17, 0, 0, MENU_ITEM_START_COLUMN);	//lead/lag mode      //10 for the last arguement
+		displayChineseTextInOneLineHighlighted(leadLagControlModeChinese, 16, 17, 0, 0, MENU_ITEM_START_COLUMN);	//lead/lag mode      //10 for the last arguement
 		displayChineseTextInOneLine(groupControlModeChinese, 18, 19, 0, 2, MENU_ITEM_START_COLUMN);	//unit identification
 		displayChineseTextInOneLine(leadLagControlModeChinese, 20, 21, 0, 4, MENU_ITEM_START_COLUMN);	//differential two
 		displayChineseTextInOneLine(leadLagControlModeChinese, 22, 23, 0, 6, MENU_ITEM_START_COLUMN);	//control strategy
@@ -2602,7 +2602,7 @@ void masterSlaveModeDisplayMemory(void)
 	}
 	else
 	{
-		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 24, 25, 0, 0, MENU_ITEM_START_COLUMN);	//master/slave mode   //10 for the last arguement
+		displayChineseTextInOneLineHighlighted(masterSlaveControlModeChinese, 24, 25, 0, 0, MENU_ITEM_START_COLUMN);	//master/slave mode   //10 for the last arguement
 		displayChineseTextInOneLine(groupControlModeChinese, 18, 19, 0, 2, MENU_ITEM_START_COLUMN);	//unit identification
 		displayChineseTextInOneLine(masterSlaveControlModeChinese, 26, 27, 0, 4, MENU_ITEM_START_COLUMN);	//number of units
 	}
