@@ -135,3 +135,4 @@ void setHorizontalMode(void)
 	error = CI2C1_SendBlock(&dataToSend, 16, &tx_cnt);
 	while(I2CIsBusy);
 }
+

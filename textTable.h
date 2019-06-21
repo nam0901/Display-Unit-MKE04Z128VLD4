@@ -126,4 +126,6 @@ extern const unsigned char *italianText[];
 extern const unsigned char *polishText[];
 extern const unsigned char *spanishText[];
 
+extern const unsigned char *chineseText[];
+
 #endif /* SOURCES_TEXTTABLE_H_ */

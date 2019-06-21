@@ -560,6 +560,7 @@ void userInterfacePosition(void)
 
 void systemInterfacePosition(void)
 {
+	if(currentLanguage != CHINESE){
 	if (releasedBack)
 	{
 		releasedBack = false;
@@ -648,14 +649,15 @@ void systemInterfacePosition(void)
 	else if (releasedUp)
 	{
 		releasedUp = false;
-		if (currentPosition.lineNumber > 1)
-		{
-			currentPosition.lineNumber -= 1;
-		}
-		else{
-			currentPosition.lineNumber = 8;
-			//			currentPosition.lineNumber = 1;
-		}
+
+
+			if (currentPosition.lineNumber > 1)
+			{
+				currentPosition.lineNumber -= 1;
+			}
+			else{
+				currentPosition.lineNumber = 8;
+			}
 
 	}
 	else if (releasedDown)
@@ -667,9 +669,126 @@ void systemInterfacePosition(void)
 		}
 		else
 		{
-//			currentPosition.lineNumber = 8;
 			currentPosition.lineNumber = 1;
 		}
+	}
+	//Chinese Version
+	}else{
+		if (releasedBack)
+			{
+				releasedBack = false;
+				currentPosition.displayLevel = MAIN_MENU_POSITION;
+				currentPosition.lineNumber   = OUTLET_LINENUM;
+			}
+		else if (releasedOK)
+			{
+				releasedOK = false;
+				refreshScreen = true;
+				parameterIsSet = false;
+				switch (currentPosition.lineNumber)
+				{case 1:
+					currentPosition.displayLevel = GROUP_CONTROL_MODE_POSITION;
+					currentPosition.lineNumber = INLET_LINENUM;
+					break;
+
+				case 2:
+					currentPosition.displayLevel = DOOR_SWITCH_POSITION;
+					if (modbus_rw_coil_rcv[DOOR_SWITCH/8] & DOOR_SWITCH_F)
+					{
+						currentPosition.lineNumber = OUTLET_LINENUM;
+					}
+					else
+					{
+						currentPosition.lineNumber = INLET_LINENUM;
+					}
+					break;
+
+				case 3:
+					currentPosition.displayLevel = DISABLE_SWITCH_POSITION;
+					if (modbus_rw_coil_rcv[DISABLE_SWITCH/8] & DISABLE_SWITCH_F)
+					{
+						currentPosition.lineNumber = OUTLET_LINENUM;
+					}
+					else
+					{
+						currentPosition.lineNumber = INLET_LINENUM;
+					}
+					break;
+
+				case 4:
+					currentPosition.displayLevel = ALARM_RELAY_OUTPUT_POSITION;
+					if (modbus_rw_coil_rcv[ALARM_OUTPUT/8] & ALARM_OUTPUT_F)
+					{
+						currentPosition.lineNumber = OUTLET_LINENUM;
+					}
+					else
+					{
+						currentPosition.lineNumber = INLET_LINENUM;
+					}
+					break;
+
+				case 5:
+					currentPosition.displayLevel = COMPRESSOR_RESTART_DELAY_POSITION;
+					userInput = modbus_rw_reg_rcv[COMP_DELAY_TIME].ivalue;
+					break;
+
+				case 6:
+					currentPosition.displayLevel = COMPRESSOR_CURRENT_POSITION;
+					currentPosition.lineNumber = INLET_LINENUM;
+					break;
+
+				case 7:
+					currentPosition.displayLevel = EVAP_OUT_TEMP_SENSOR_POSITION;
+					if(modbus_rw_coil_rcv[PROBE2_PRESENT/8] & PROBE2_PRESENT_F)  //Probe 2 present
+					{
+						currentPosition.lineNumber = INLET_LINENUM;
+					}
+					else  //Probe 2 absent
+					{
+						currentPosition.lineNumber = OUTLET_LINENUM;
+					}
+					break;
+
+				case 9:
+					currentPosition.displayLevel = DISPLAY_SYS_SETTINGS_MENU_POSITION;
+					currentPosition.lineNumber = INLET_LINENUM;
+					break;
+
+				default:
+					break;
+				}
+			}else if (releasedUp)
+				{
+					releasedUp = false;
+
+
+						if (currentPosition.lineNumber > 1)
+						{
+							currentPosition.lineNumber -= 1;
+						}else if(currentPosition.lineNumber == 9){
+
+							currentPosition.lineNumber -= 2;
+						}
+						else{
+							currentPosition.lineNumber = 9;
+						}
+
+				}
+				else if (releasedDown)
+				{
+					releasedDown = false;
+					if (currentPosition.lineNumber < 9)
+					{
+						currentPosition.lineNumber += 1;
+					}else if(currentPosition.lineNumber == 7){
+						currentPosition.lineNumber += 2;
+					}
+					else
+					{
+						currentPosition.lineNumber = 1;
+					}
+
+				}
 	}
 }
 

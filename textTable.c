@@ -12,6 +12,10 @@
  */
 #include "textTable.h"
 
+const unsigned char* chineseText[] = {
+		"脧"
+};
+
 const unsigned char *englishText[] = {
 /* 0 */ "High Temp Alarm ",
 /* 1 */ "Low Temp Alarm ",

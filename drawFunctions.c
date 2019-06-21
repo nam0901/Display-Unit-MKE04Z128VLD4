@@ -10,7 +10,7 @@
 #include "OLED.h"
 
 
-#define CHINESE_CHAR_WIDTH				14
+#define CHINESE_CHAR_WIDTH				14 //14
 #define MAX_NUM_OF_WORDS_IN_TEXT		20
  _Bool scrollingHighlight;
 
@@ -224,23 +224,24 @@ void displayTextInOneLineScrolling(const unsigned char string[], const unsigned 
 void displayChineseTextInOneLine(const char fontTable[], int startCharNum, int endCharNum, int spaceInBetween, int startPage, int startColumn)
 {
 	int index = startCharNum * (CHINESE_CHAR_WIDTH*2); // each chinese char is (CHINESE_CHAR_WIDTH*2) bytes wide.
-	int numOfChar;
-	if(startCharNum <= endCharNum)
-	{
-		numOfChar = endCharNum-startCharNum + 1;
-		while(numOfChar>0)
+		int numOfChar;
+		if(startCharNum <= endCharNum)
 		{
-			for (int i = startPage; i < startPage+2; i++)
+			numOfChar = endCharNum-startCharNum + 1;
+			while(numOfChar>0)
 			{
-				for (int j = startColumn; j < startColumn+CHINESE_CHAR_WIDTH; j++)
+				for (int i = startPage; i < startPage+2; i++) // the height is 2 for every line
 				{
-					I2CDataBuffer[i][j] = fontTable[index++];
+					for (int j = startColumn; j < startColumn+CHINESE_CHAR_WIDTH; j++)
+					{
+						I2CDataBuffer[i][j] = fontTable[index++];
+//						index++:
+					}
 				}
+				startColumn = startColumn + CHINESE_CHAR_WIDTH + spaceInBetween;
+				numOfChar--;
 			}
-			startColumn = startColumn + CHINESE_CHAR_WIDTH + spaceInBetween;
-			numOfChar--;
 		}
-	}
 }
 
 // startCharNum start with 0

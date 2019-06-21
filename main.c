@@ -75,6 +75,7 @@
 #include "stdbool.h"
 #include "drawFunctions.h"
 #include "bootstrap.h"
+#include <locale.h>
 
 // Firmware & Hardware Versions
 #define DU_FIRMWARE_VERSION_MAJOR	'1'
@@ -191,6 +192,7 @@ bool prev_second_flag = FALSE;
 int main(void)
 /*lint -restore Enable MISRA rule (6.3) checking. */
 {
+	setlocale(LC_ALL, "");
 	/* Write your local variable definition here */
 
 	/*** Processor Expert internal initialization. DON'T REMOVE THIS CODE!!! ***/
@@ -223,9 +225,11 @@ int main(void)
 	currentTextTable = englishText;
 
 	// "displayPosition.h"
-	currentPosition.displayLevel = COMPANY_ICON_POSITION;
+	currentPosition.displayLevel = MAIN_SCREEN_POSITION;
 	currentPosition.lineNumber   = INLET_LINENUM;
+
 	updateDisplayPosition = true;
+
 	//Disable all the alarms
 	for (int i = 0; i < NUMBER_OF_ALARMS; i++)
 	{
@@ -365,6 +369,10 @@ int main(void)
 
 			/* Check Degraded Mode */
 //			uint16 uart_write_return;
+
+			// updateDisplayPosition needs to be set from scanButton() function. So if there is no pressed, the screen does not update
+			//the master/slave number
+
 
 			/* Update Positions */
 			checkDisplayPosition();

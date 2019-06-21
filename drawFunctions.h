@@ -42,6 +42,7 @@ char endOfMajorColumn;
 /* Function Prototypes */
 // Text
 int charWidth(unsigned char ch, const unsigned char fontTable[]);
+
 void drawCharacter(unsigned char ch, const unsigned char fontTable[], unsigned char page, unsigned char col);
 void drawAndHighlightCharacter(unsigned char ch, const unsigned char fontTable[], unsigned char page, unsigned char col);
 void displayTextInOneLine (const unsigned char string[], const unsigned char fontTable[], unsigned char page, unsigned char col);

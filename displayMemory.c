@@ -1660,7 +1660,7 @@ void userInterfaceDisplayMemory(void)
 					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_CoolingSetPoint], currentTextTable[TEXT_INDEX_CoolingDifferential], currentTextTable[TEXT_INDEX_HeatingSetPoint]); break;
 				case 4: case 5: case 6:
 					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_HeatingDifferential], currentTextTable[TEXT_INDEX_HighTempAlarm], currentTextTable[TEXT_INDEX_LowTempAlarm]); break;
-				case 7: case 8: case 9:
+				case 7: case 9:
 					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_TemperatureScale], currentTextTable[TEXT_INDEX_Hysteresis], currentTextTable[TEXT_INDEX_Language]); break;
 				case 10:
 					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_Passcode], "\0", "\0"); break;
@@ -2250,7 +2250,7 @@ void languageDisplayMemory(void)
 	    {
 	        case 1: case 2: case 3:
 	    		displayTextInOneLine(currentTextTable[TEXT_INDEX_English], arial14, 2, MENU_ITEM_START_COLUMN);
-				displayChineseTextInOneLine(languageMenuChinese, 0, 1, 0, 4, MENU_ITEM_START_COLUMN);
+				displayChineseTextInOneLine(languageMenuChinese, 0, 1, 0, 4, MENU_ITEM_START_COLUMN); //from 0 to 1
 	    		displayTextInOneLine(currentTextTable[TEXT_INDEX_French], arial14, 6, MENU_ITEM_START_COLUMN);
 	            break;
 	        case 4: case 5: case 6:
@@ -2258,9 +2258,7 @@ void languageDisplayMemory(void)
 	        	displayTextInOneLine(currentTextTable[TEXT_INDEX_Spanish], arial14, 4, MENU_ITEM_START_COLUMN);
 	        	displayTextInOneLine(currentTextTable[TEXT_INDEX_italiano], arial14, 6, MENU_ITEM_START_COLUMN);
 	            break;
-	        /*case 7:
-	    		displayTextInOneLine(currentTextTable[TEXT_INDEX_Polskie], arial14, 2, MENU_ITEM_START_COLUMN);
-	    		break;*/
+
 	        default: break;
 	    }
 		showSelectArrow();
@@ -2361,22 +2359,34 @@ void displayChineseSystemInterface(int lineNumber)
 	switch (lineNumber)
 	{
 		case 1: case 2: case 3:
-		// Line 1: Door Switch
-		displayChineseTextInOneLine(systemInterfaceChinese, 4, 7, 0, 2, MENU_ITEM_START_COLUMN);
-		// Line 2: Disable Switch
-		displayChineseTextInOneLine(systemInterfaceChinese, 8, 11, 0, 4, MENU_ITEM_START_COLUMN);
-		// Line 3: Alarm relay output
-		displayChineseTextInOneLine(systemInterfaceChinese, 12, 16, 0, 6, MENU_ITEM_START_COLUMN);
+		//Line 1: Group Control Mode
+		displayChineseTextInOneLine(groupControlModeChinese, 0, 4, 0,2, MENU_ITEM_START_COLUMN);
+		// Line 2: Door Switch
+		displayChineseTextInOneLine(systemInterfaceChinese, 4, 7, 0, 4, MENU_ITEM_START_COLUMN);
+		// Line 3: Disable Switch
+		displayChineseTextInOneLine(systemInterfaceChinese, 8, 11, 0, 6, MENU_ITEM_START_COLUMN);
+
 		break;
 
 		case 4: case 5: case 6:
-		// Line 4: Compressor Restart Delay
-		displayChineseTextInOneLine(systemInterfaceChinese, 17, 23, 0, 2, MENU_ITEM_START_COLUMN);
+		// Line 4: Alarm relay output
+		displayChineseTextInOneLine(systemInterfaceChinese, 12, 16, 2, 2, MENU_ITEM_START_COLUMN);
 		// Line 5: Compressor Current
 		displayChineseTextInOneLine(systemInterfaceChinese, 24, 28, 0, 4, MENU_ITEM_START_COLUMN);
-		// Line 6: System Settings
+		// Line 6: Compressor Restart Delay
+		displayChineseTextInOneLine(systemInterfaceChinese, 17, 23, 0, 6, MENU_ITEM_START_COLUMN);
+
+		break;
+
+		case 7: case 8: case 9:
+		//Line 1: Evapor Output Temp Sensor
+		displayChineseTextInOneLine(systemInterfaceChinese,33,37,0,2,MENU_ITEM_START_COLUMN);
+		//Line 2:
+		displayChineseTextInOneLine(systemInterfaceChinese,38,43,0,4,MENU_ITEM_START_COLUMN);
+		// Line 2: System Settings
 		displayChineseTextInOneLine(systemInterfaceChinese, 29, 32, 0, 6, MENU_ITEM_START_COLUMN);
 		break;
+
 
 		default: break;
 	}
@@ -2438,9 +2448,9 @@ void groupControlModeDisplayMemory(void)
 	}
 	else
 	{
-		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 0, 1, 0, 0, MENU_ITEM_START_COLUMN);	//group control mode
-		displayChineseTextInOneLine(groupControlModeChinese, 1, 2, 0, 2, MENU_ITEM_START_COLUMN);				//mode
-		displayChineseTextInOneLine(groupControlModeChinese, 4, 5, 0, 4, MENU_ITEM_START_COLUMN);				//mode settings
+		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 0, 4, 0, 0, MENU_ITEM_START_COLUMN);	//group control mode
+		displayChineseTextInOneLine(groupControlModeChinese, 5, 6, 0, 2, MENU_ITEM_START_COLUMN);				//mode
+		displayChineseTextInOneLine(groupControlModeChinese, 7, 10, 0, 4, MENU_ITEM_START_COLUMN);				//mode settings
 	}
 	SysIntArrowPosition = true;
 	showSelectArrow();
@@ -2484,19 +2494,19 @@ void modeDisplayMemory(void)
 			switch(currentPosition.lineNumber)
 			{
 				case INLET_LINENUM: //stand-alone mode
-					displayChineseTextInOneLine(groupControlModeChinese, 0, 1, 0, 2, MENU_ITEM_START_COLUMN);	//group control mode
+					displayChineseTextInOneLine(groupControlModeChinese, 0, 4, 0, 2, MENU_ITEM_START_COLUMN);	//group control mode
 					displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
-					displayChineseTextInOneLine(groupControlModeChinese, 6, 7, 0, 6, MENU_ITEM_START_COLUMN);	    //stand-alone
+					displayChineseTextInOneLine(modeControlModeChinese, 0, 3, 0, 6, MENU_ITEM_START_COLUMN);	    //stand-alone
 					break;
 				case OUTLET_LINENUM: //lead/lag mode
-					displayChineseTextInOneLine(groupControlModeChinese, 0, 1, 0, 2, MENU_ITEM_START_COLUMN);	//group control mode
+					displayChineseTextInOneLine(groupControlModeChinese, 0, 4, 0, 2, MENU_ITEM_START_COLUMN);	//group control mode
 					displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
-					displayChineseTextInOneLine(groupControlModeChinese, 8, 9, 0, 6, MENU_ITEM_START_COLUMN);	    //lead/lag
+					displayChineseTextInOneLine(modeControlModeChinese, 4, 7, 0, 6, MENU_ITEM_START_COLUMN);	    //lead/lag
 					break;
 				case COIL_LINENUM: //master/slave
 					displayChineseTextInOneLine(groupControlModeChinese, 0, 1, 0, 2, MENU_ITEM_START_COLUMN);	//group control mode
 					displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
-					displayChineseTextInOneLine(groupControlModeChinese, 10, 11, 0, 6, MENU_ITEM_START_COLUMN);	// master/slave
+					displayChineseTextInOneLine(modeControlModeChinese, 8, 9, 0, 6, MENU_ITEM_START_COLUMN);	// master/slave
 					break;
 				default: break;
 			}
@@ -2513,10 +2523,10 @@ void modeDisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLineHighlighted(groupControlModeChinese, 2, 3, 0, 0, MENU_ITEM_START_COLUMN);	//mode
-			displayChineseTextInOneLine(groupControlModeChinese, 6, 7, 0, 2, MENU_ITEM_START_COLUMN);	//stand-alone
-			displayChineseTextInOneLine(groupControlModeChinese, 8, 9, 0, 4, MENU_ITEM_START_COLUMN);	//lead/lag
-			displayChineseTextInOneLine(groupControlModeChinese, 10, 11, 0, 6, MENU_ITEM_START_COLUMN);	//master/slave
+			displayChineseTextInOneLineHighlighted(groupControlModeChinese, 5, 6, 0, 0, MENU_ITEM_START_COLUMN);	//mode
+			displayChineseTextInOneLine(modeControlModeChinese, 0, 3, 0, 2, MENU_ITEM_START_COLUMN);	//stand-alone
+			displayChineseTextInOneLine(modeControlModeChinese, 4, 7, 0, 4, MENU_ITEM_START_COLUMN);	//lead/lag
+			displayChineseTextInOneLine(modeControlModeChinese, 8, 9, 0, 6, MENU_ITEM_START_COLUMN);	//master/slave
 		}
 	}
 }
@@ -2543,8 +2553,8 @@ void standAloneModeDisplayMemory(void)
 	}
 	else
 	{
-		displayChineseTextInOneLineHighlighted(groupControlModeChinese, 12, 13, 0, 0, MENU_ITEM_START_COLUMN);	//stand alone mode
-		displayChineseTextInOneLine(standAloneModeChinese, 14, 15, 0, 2, MENU_ITEM_START_COLUMN);	//no settings
+		displayChineseTextInOneLineHighlighted(standAloneModeChinese, 0, 5, 0, 0, MENU_ITEM_START_COLUMN);	//stand alone mode
+		displayChineseTextInOneLine(standAloneModeChinese, 6, 8, 0, 2, MENU_ITEM_START_COLUMN);	//no settings
 	}
 	showSelectArrow();
 }
@@ -2571,10 +2581,10 @@ void leadLagModeDisplayMemory(void)
 	}
 	else
 	{
-		displayChineseTextInOneLineHighlighted(leadLagControlModeChinese, 16, 17, 0, 0, MENU_ITEM_START_COLUMN);	//lead/lag mode      //10 for the last arguement
-		displayChineseTextInOneLine(groupControlModeChinese, 18, 19, 0, 2, MENU_ITEM_START_COLUMN);	//unit identification
-		displayChineseTextInOneLine(leadLagControlModeChinese, 20, 21, 0, 4, MENU_ITEM_START_COLUMN);	//differential two
-		displayChineseTextInOneLine(leadLagControlModeChinese, 22, 23, 0, 6, MENU_ITEM_START_COLUMN);	//control strategy
+		displayChineseTextInOneLineHighlighted(leadLagControlModeChinese, 0, 5, 0, 0, MENU_ITEM_START_COLUMN);	//lead/lag mode      //10 for the last arguement
+		displayChineseTextInOneLine(modeControlModeChinese, 10, 14, 0, 2, MENU_ITEM_START_COLUMN);	//unit identification
+		displayChineseTextInOneLine(leadLagControlModeChinese, 6, 8, 0, 4, MENU_ITEM_START_COLUMN);	//differential two
+		displayChineseTextInOneLine(leadLagControlModeChinese, 9, 12, 0, 6, MENU_ITEM_START_COLUMN);	//control strategy
 	}
 	showSelectArrow();
 	SysIntArrowPosition = true;
@@ -2602,9 +2612,9 @@ void masterSlaveModeDisplayMemory(void)
 	}
 	else
 	{
-		displayChineseTextInOneLineHighlighted(masterSlaveControlModeChinese, 24, 25, 0, 0, MENU_ITEM_START_COLUMN);	//master/slave mode   //10 for the last arguement
-		displayChineseTextInOneLine(groupControlModeChinese, 18, 19, 0, 2, MENU_ITEM_START_COLUMN);	//unit identification
-		displayChineseTextInOneLine(masterSlaveControlModeChinese, 26, 27, 0, 4, MENU_ITEM_START_COLUMN);	//number of units
+		displayChineseTextInOneLineHighlighted(masterSlaveControlModeChinese, 0, 3, 0, 0, MENU_ITEM_START_COLUMN);	//master/slave mode   //10 for the last arguement
+		displayChineseTextInOneLine(modeControlModeChinese, 10, 14, 0, 2, MENU_ITEM_START_COLUMN);	//unit identification
+		displayChineseTextInOneLine(masterSlaveControlModeChinese, 4, 7, 0, 4, MENU_ITEM_START_COLUMN);	//number of units
 	}
 	SysIntArrowPosition = true;
 	showSelectArrow();
@@ -2639,7 +2649,7 @@ void unitIdentificationDisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLine(groupControlModeChinese, 18, 19, 0, 2, 10);	//unit identification
+			displayChineseTextInOneLine(modeControlModeChinese, 10, 14, 0, 2, 10);	//unit identification
 			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
 			drawIntegerRightAligned(digitCourier2x7, userInput, 2, 7, 4, 60);
 		}
@@ -2654,7 +2664,7 @@ void unitIdentificationDisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLineHighlighted(groupControlModeChinese, 18, 19, 0, 0, 10);	//unit identification
+			displayChineseTextInOneLineHighlighted(modeControlModeChinese, 10, 14, 0, 0, 10);	//unit identification
 		}
 		drawIntegerLeftAligned(digitCalibriLight4x28, userInput, 4, 28, 3, 36);
 	}
@@ -2686,7 +2696,7 @@ void differential2DisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLine(leadLagControlModeChinese, 20, 21, 0, 2, 10); 	//differential two
+			displayChineseTextInOneLine(leadLagControlModeChinese, 6, 8, 0, 2, 10); 	//differential two
 			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
 //			displayChineseTextInOneLine(userInterfaceChinese, 4, 8, 0, 2, 10);
 //			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 2, 80);
@@ -2716,7 +2726,7 @@ void differential2DisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLineHighlighted(leadLagControlModeChinese, 20, 21, 0, 0, 10);	//differential two
+			displayChineseTextInOneLineHighlighted(leadLagControlModeChinese, 6, 8, 0, 0, 10);	//differential two
 		}
 		showTempReading(userInput, 3, 100);
 	}
@@ -2754,12 +2764,12 @@ void controlStrategyDisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLine(leadLagControlModeChinese, 22, 23, 0, 2, 10);	//control strategy
+			displayChineseTextInOneLine(leadLagControlModeChinese, 9, 12, 0, 2, 10);	//control strategy
 			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
 			int digit = modbus_rw_reg_rcv[CONTROL_STRATEGY].ivalue;
 			drawDigit(digitCourier2x7, digit/10, 2, 7, 4, 60);
 			drawDigit(digitCourier2x7, digit%10, 2, 7, 4, 67);
-			displayChineseTextInOneLine(groupControlModeChinese, 28, 29, 0, 4, 10);	//hours
+			displayChineseTextInOneLine(groupControlModeChinese, 11, 12, 0, 4, 10);	//hours
 //			displayChineseTextInOneLine(userInterfaceChinese, 4, 8, 0, 2, 10);
 //			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 2, 80);
 //			int num = modbus_rw_reg_rcv[COOLING_SP].ivalue;
@@ -2822,7 +2832,7 @@ void numberOfUnitsDisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLine(masterSlaveControlModeChinese, 26, 27, 0, 2, 10);	//number of units
+			displayChineseTextInOneLine(masterSlaveControlModeChinese, 4, 7, 0, 2, 10);	//number of units
 			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
 			int digit = modbus_rw_reg_rcv[GROUP_CONTROL_SIZE].ivalue;
 			drawDigit(digitCourier2x7, digit/10, 2, 7, 4, 60);
@@ -2839,7 +2849,7 @@ void numberOfUnitsDisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLineHighlighted(masterSlaveControlModeChinese, 26, 27, 0, 0, 10);	//number of units
+			displayChineseTextInOneLineHighlighted(masterSlaveControlModeChinese, 4, 7, 0, 0, 10);	//number of units
 		}
 		drawIntegerLeftAligned(digitCalibriLight4x28, userInput, 4, 28, 3, 36);
 	}
@@ -3243,8 +3253,8 @@ void evapOutTempSensorDisplayMemory(void)
 						displayTextInMultipleLines(currentTextTable[TEXT_INDEX_EvapOutTempSensorIsSetToPresent], arial14, &pgg, &ncol, false);
 						break;
 					case CHINESE:
-//						displayChineseTextInOneLine(systemInterfaceChinese, 4, 5, 0, 3, 10);
-//						displayChineseTextInOneLine(NO_NC_Chinese, 2, 3, 0, 3, 38);
+						displayChineseTextInOneLine(systemInterfaceChinese, 4, 5, 0, 3, 10);
+						displayChineseTextInOneLine(NO_NC_Chinese, 2, 3, 0, 3, 38);
 						break;
 					default: break;
 				}
@@ -3257,8 +3267,8 @@ void evapOutTempSensorDisplayMemory(void)
 						displayTextInMultipleLines(currentTextTable[TEXT_INDEX_EvapOutTempSensorIsSetToAbsent], arial14, &pgg, &ncol, false);
 						break;
 					case CHINESE:
-//						displayChineseTextInOneLine(systemInterfaceChinese, 4, 5, 0, 3, 10);
-//						displayChineseTextInOneLine(NO_NC_Chinese, 0, 1, 0, 3, 38);
+						displayChineseTextInOneLine(systemInterfaceChinese, 4, 5, 0, 3, 10);
+						displayChineseTextInOneLine(NO_NC_Chinese, 0, 1, 0, 3, 38);
 						break;
 					default: break;
 				}
@@ -3274,9 +3284,9 @@ void evapOutTempSensorDisplayMemory(void)
 			}
 			else
 			{
-//				displayChineseTextInOneLineHighlighted(systemInterfaceChinese, 4, 7, 0, 0, 10);
-//				displayChineseTextInOneLine(NO_NC_Chinese, 0, 1, 0, 2, MENU_ITEM_START_COLUMN);
-//				displayChineseTextInOneLine(NO_NC_Chinese, 2, 3, 0, 4, MENU_ITEM_START_COLUMN);
+				displayChineseTextInOneLineHighlighted(systemInterfaceChinese, 4, 7, 0, 0, 10);
+				displayChineseTextInOneLine(NO_NC_Chinese, 0, 1, 0, 2, MENU_ITEM_START_COLUMN);
+				displayChineseTextInOneLine(NO_NC_Chinese, 2, 3, 0, 4, MENU_ITEM_START_COLUMN);
 			}
 			showSelectArrow();
 		}
