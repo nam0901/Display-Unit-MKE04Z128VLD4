@@ -1009,7 +1009,8 @@ void alarmDisplayMemory(int alarmPosition)
 //			5%3  = 2	: page 4																									//
 //			6%3  = 0	: page 6																									//
 //			7%3  = 1	:	.																										//
-//			8%3  = 2	:  	.																										//
+//			8%3  = 2	:  	.
+//			9%3  = 0 	:   .
 //			10%3 = 1	:	.																										//
 //		From above, any number modulo 3 that result in the 0 will always be in page6. So so this give rise to the first case.		//
 //		As for the second case, page2 and page4, there are need to calculate the correct page to draw the arrow. This can be		//
@@ -1018,6 +1019,7 @@ void alarmDisplayMemory(int alarmPosition)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void showSelectArrow(void)
 {
+
 	if (currentPosition.lineNumber%3 == 0)
 	{
 		if(SysSettingArrowPosition||SysIntArrowPosition)
@@ -1042,6 +1044,7 @@ void showSelectArrow(void)
 			drawIcon(selectArrow, 5, 2, (currentPosition.lineNumber%3)*2, 3);
 		}
 	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2382,8 +2385,8 @@ void displayChineseSystemInterface(int lineNumber)
 		//Line 1: Evapor Output Temp Sensor
 		displayChineseTextInOneLine(systemInterfaceChinese,33,37,0,2,MENU_ITEM_START_COLUMN);
 		//Line 2:
-		displayChineseTextInOneLine(systemInterfaceChinese,38,43,0,4,MENU_ITEM_START_COLUMN);
-		// Line 2: System Settings
+		displayChineseTextInOneLine(Eva_out_2,0,5,0,4,MENU_ITEM_START_COLUMN);
+		// Line 3: System Settings
 		displayChineseTextInOneLine(systemInterfaceChinese, 29, 32, 0, 6, MENU_ITEM_START_COLUMN);
 		break;
 

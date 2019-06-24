@@ -13,6 +13,8 @@ extern const char probeNameChinese[];
 extern const char mainMenuChinese[];
 extern const char userInterfaceChinese[];
 extern const char systemInterfaceChinese[];
+extern const char Eva_out_2[];
+
 extern const char aboutChinese[];
 
 extern const char enterPasswordChinese[];
