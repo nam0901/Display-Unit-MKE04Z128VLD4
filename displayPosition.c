@@ -942,7 +942,7 @@ void alarmPosition(void)
 
 void coolingSetPointPosition(void)
 {
-	int coolingMax = modbus_ro_reg_rcv[COOL_SP_MAX].ivalue;
+	int coolingMax = modbus_ro_reg_rcv[COOL_SP_MAX].ivalue; //The maximum value = 46?
 	int coolingMin = modbus_ro_reg_rcv[COOL_SP_MIN].ivalue; //do this to solve compilation time and stack call
 
 	if (releasedBack)
@@ -971,7 +971,7 @@ void coolingSetPointPosition(void)
 	{
 
 		releasedUp = false;
-			if(masterMode || leadLagMode){
+			if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -993,7 +993,13 @@ void coolingSetPointPosition(void)
 					}
 					else
 					{
-						userInput = coolingMax;
+						if(positiveDiff){ //Positive Differential
+							userInput = modbus_ero_reg_rcv[COOL_ON_MAX].ivalue - modbus_rw_reg_rcv[COOLING_DIF_1].ivalue;
+						}else{
+							userInput = coolingMax;
+						}
+
+//						userInput = coolingMax;
 					}
 			}
 		}
@@ -1001,7 +1007,7 @@ void coolingSetPointPosition(void)
 	else if (releasedDown)
 	{
 		releasedDown = false;
-		if(masterMode || leadLagMode){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1023,14 +1029,20 @@ void coolingSetPointPosition(void)
 					}
 					else
 					{
-						userInput = coolingMin;
+						if(positiveDiff){ //Negative Differential
+							userInput = coolingMin;
+						}else{
+							userInput = modbus_ero_reg_rcv[COOL_OFF_MIN].ivalue + modbus_rw_reg_rcv[COOLING_DIF_1].ivalue;
+						}
+
+//						userInput = coolingMin;
 					}
 			}
 		}
 	}
 	else if (heldUp)
 	{
-		if(masterMode || leadLagMode){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1054,7 +1066,13 @@ void coolingSetPointPosition(void)
 						}
 						else
 						{
-							userInput = coolingMax;
+							if(positiveDiff){ //Positive Differential
+								userInput = modbus_ero_reg_rcv[COOL_ON_MAX].ivalue - modbus_rw_reg_rcv[COOLING_DIF_1].ivalue;
+							}else{
+								userInput = coolingMax;
+							}
+
+//							userInput = coolingMax;
 						}
 						updateScreenTimerDone = false;
 					}
@@ -1071,7 +1089,7 @@ void coolingSetPointPosition(void)
 	}
 	else if (heldDown)
 	{
-		if(masterMode || leadLagMode){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
 		// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1095,7 +1113,12 @@ void coolingSetPointPosition(void)
 						}
 						else
 						{
-							userInput = coolingMin;
+//							userInput = coolingMin;
+							if(positiveDiff){ //Negative Differential
+								userInput = coolingMin;
+							}else{
+								userInput = modbus_ero_reg_rcv[COOL_OFF_MIN].ivalue + modbus_rw_reg_rcv[COOLING_DIF_1].ivalue;
+							}
 						}
 						updateScreenTimerDone = false;
 					}
@@ -1141,7 +1164,7 @@ void coolingDifferentialPosition(void)
 	{
 
 		releasedUp = false;
-		if(masterMode || leadLagMode){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1171,7 +1194,7 @@ void coolingDifferentialPosition(void)
 	else if (releasedDown)
 	{
 		releasedDown = false;
-		if(masterMode || leadLagMode){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1200,7 +1223,7 @@ void coolingDifferentialPosition(void)
 	}
 	else if (heldUp)
 	{
-		if(masterMode || leadLagMode){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1241,7 +1264,7 @@ void coolingDifferentialPosition(void)
 	}
 	else if (heldDown)
 	{
-		if(masterMode || leadLagMode){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1280,13 +1303,13 @@ void coolingDifferentialPosition(void)
 			}
 		}
 	}
-
 }
 
 void heatingSetPointPosition(void)
 {
 	int heatingSPMax = modbus_rw_reg_rcv[HEATING_SP_MAX].ivalue;
 	int heatingSPMin = modbus_rw_reg_rcv[HEATING_SP_MIN].ivalue;
+
 	if (releasedBack)
 	{
 		releasedBack = false;
@@ -1565,10 +1588,12 @@ void heatingDifferentialPosition(void)
 	}
 }
 
-void highTempAlarmPosition(void)
+void highTempAlarmPosition(void) //Default: 125 F, Range: 100 - 140 F
 {
-	int highTempMax = modbus_rw_reg_rcv[HIGH_TEMP_SP_MAX].ivalue;
-	int highTempMin = modbus_rw_reg_rcv[HIGH_TEMP_SP_MIN].ivalue;
+//	int highTempMax = modbus_rw_reg_rcv[HIGH_TEMP_SP_MAX].ivalue;
+//	int highTempMin = modbus_rw_reg_rcv[HIGH_TEMP_SP_MIN].ivalue;
+	int highTempMax = 1400;
+	int highTempMin = 1000;
 
 	char lineNumTemp = 3; //heater not present
 	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) //heater present
@@ -1713,10 +1738,15 @@ void highTempAlarmPosition(void)
 	}
 }
 
-void lowTempAlarmPosition(void)
+void lowTempAlarmPosition(void) //Default: 40 F. Range: 0 - 60 F
 {
-	int lowTempMax = modbus_rw_reg_rcv[LOW_TEMP_SP_MAX].ivalue;
-	int lowTempMin = modbus_rw_reg_rcv[LOW_TEMP_SP_MIN].ivalue;
+//	int lowTempMax = modbus_rw_reg_rcv[LOW_TEMP_SP_MAX].ivalue;
+//	int lowTempMin = modbus_rw_reg_rcv[LOW_TEMP_SP_MIN].ivalue;
+
+	int lowTempMax = 6000;
+	int lowTempMin = 0;
+
+
 	char lineNumTemp = 4; // heater not present
 
 	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
@@ -1960,9 +1990,11 @@ void hysteresisPosition(void)
 			switch (currentPosition.lineNumber)
 			{
 				case 1: // positive
+					positiveDiff = true;
 					uart_write_return = display_uart_update(COIL, RW_COIL_START + COOL_HYSTERESIS, false, 0, 0, COOL_HYSTERESIS_F);
 					break;
 				case 2: // negative
+					positiveDiff = false;
 					uart_write_return = display_uart_update(COIL, RW_COIL_START + COOL_HYSTERESIS, true, 0, 0, COOL_HYSTERESIS_F);
 					break;
 				default: break;
