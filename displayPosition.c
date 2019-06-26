@@ -12,7 +12,9 @@
 uint16_union modbus_ro_reg_rcv[RO_REG_LEN];		//read only registers controller copy
 byte modbus_rw_coil_rcv[RW_COIL_LEN/8+1];		//read/write coils controller copy
 uint16_union modbus_ero_reg_rcv[ERO_REG_LEN+1]; //extended read only registers, modbus 501-509 599
-
+_Bool masterMode;
+_Bool leadLagMode;
+_Bool masterSlaveMode;
 #define USER_LEVEL_PASSWORD		22
 #define SYSTEM_LEVEL_PASSWORD	66
 
@@ -967,70 +969,15 @@ void coolingSetPointPosition(void)
 	}
 	else if (releasedUp)
 	{
+
 		releasedUp = false;
-		// if not in degraded mode, allow users to adjust
-		if (!isInDegradedMode)
-		{
-				if (userInput < coolingMax)
-				{
-					if ((userInput < 1000) && (userInput >= -1000))
-					{
-						userInput += 1;
-					}
-					else
-					{
-						userInput += 10;
-					}
-
-					if (userInput > coolingMax)
-					{
-						userInput = coolingMax;
-					}
-				}
-				else
-				{
-					userInput = coolingMax;
-				}
-		}
-	}
-	else if (releasedDown)
-	{
-		releasedDown = false;
-		// if not in degraded mode, allow users to adjust
-		if (!isInDegradedMode)
-		{
-				if (userInput > coolingMin)
-				{
-					if (userInput <= 1000 && userInput > -1000)
-					{
-						userInput -= 1;
-					}
-					else
-					{
-						userInput -= 10;
-					}
-
-					if (userInput < coolingMin)
-					{
-						userInput = coolingMin;
-					}
-				}
-				else
-				{
-					userInput = coolingMin;
-				}
-		}
-	}
-	else if (heldUp)
-	{
-		// if not in degraded mode, allow users to adjust
-		if (!isInDegradedMode)
-		{
-				if (updateScreenTimerDone)
-				{
+			if(masterMode || leadLagMode){
+			// if not in degraded mode, allow users to adjust
+			if (!isInDegradedMode)
+			{
 					if (userInput < coolingMax)
 					{
-						if (userInput < 1000 && userInput >= -1000)
+						if ((userInput < 1000) && (userInput >= -1000))
 						{
 							userInput += 1;
 						}
@@ -1048,25 +995,16 @@ void coolingSetPointPosition(void)
 					{
 						userInput = coolingMax;
 					}
-					updateScreenTimerDone = false;
-				}
-				else
-				{
-					if (!TI1_updateScreenTimerIsOn)
-					{
-						updateScreenRate = BUTTON_HELD_REFRESH_TIME;
-						TI1_updateScreenTimerIsOn = true;
-					}
-				}
+			}
 		}
 	}
-	else if (heldDown)
+	else if (releasedDown)
 	{
-		// if not in degraded mode, allow users to adjust
-		if (!isInDegradedMode)
-		{
-				if (updateScreenTimerDone)
-				{
+		releasedDown = false;
+		if(masterMode || leadLagMode){
+			// if not in degraded mode, allow users to adjust
+			if (!isInDegradedMode)
+			{
 					if (userInput > coolingMin)
 					{
 						if (userInput <= 1000 && userInput > -1000)
@@ -1087,18 +1025,92 @@ void coolingSetPointPosition(void)
 					{
 						userInput = coolingMin;
 					}
-					updateScreenTimerDone = false;
-				}
-				else
-				{
-					if (!TI1_updateScreenTimerIsOn)
-					{
-						updateScreenRate = BUTTON_HELD_REFRESH_TIME;
-						TI1_updateScreenTimerIsOn = true;
-					}
-				}
+			}
 		}
 	}
+	else if (heldUp)
+	{
+		if(masterMode || leadLagMode){
+			// if not in degraded mode, allow users to adjust
+			if (!isInDegradedMode)
+			{
+					if (updateScreenTimerDone)
+					{
+						if (userInput < coolingMax)
+						{
+							if (userInput < 1000 && userInput >= -1000)
+							{
+								userInput += 1;
+							}
+							else
+							{
+								userInput += 10;
+							}
+
+							if (userInput > coolingMax)
+							{
+								userInput = coolingMax;
+							}
+						}
+						else
+						{
+							userInput = coolingMax;
+						}
+						updateScreenTimerDone = false;
+					}
+					else
+					{
+						if (!TI1_updateScreenTimerIsOn)
+						{
+							updateScreenRate = BUTTON_HELD_REFRESH_TIME;
+							TI1_updateScreenTimerIsOn = true;
+						}
+					}
+			}
+		}
+	}
+	else if (heldDown)
+	{
+		if(masterMode || leadLagMode){
+		// if not in degraded mode, allow users to adjust
+			if (!isInDegradedMode)
+			{
+					if (updateScreenTimerDone)
+					{
+						if (userInput > coolingMin)
+						{
+							if (userInput <= 1000 && userInput > -1000)
+							{
+								userInput -= 1;
+							}
+							else
+							{
+								userInput -= 10;
+							}
+
+							if (userInput < coolingMin)
+							{
+								userInput = coolingMin;
+							}
+						}
+						else
+						{
+							userInput = coolingMin;
+						}
+						updateScreenTimerDone = false;
+					}
+					else
+					{
+						if (!TI1_updateScreenTimerIsOn)
+						{
+							updateScreenRate = BUTTON_HELD_REFRESH_TIME;
+							TI1_updateScreenTimerIsOn = true;
+						}
+					}
+			}
+		}
+	}
+
 }
 
 void coolingDifferentialPosition(void)
@@ -1127,67 +1139,12 @@ void coolingDifferentialPosition(void)
 	}
 	else if (releasedUp)
 	{
+
 		releasedUp = false;
-		// if not in degraded mode, allow users to adjust
-		if (!isInDegradedMode)
-		{
-				if (userInput < coolingDiffMax)
-				{
-					if ((userInput < 1000) && (userInput >= -1000))
-					{
-						userInput += 1;
-					}
-					else
-					{
-						userInput += 10;
-					}
-
-					if (userInput > coolingDiffMax)
-					{
-						userInput = coolingDiffMax;
-					}
-				}
-				else
-				{
-					userInput = coolingDiffMax;
-				}
-		}
-	}
-	else if (releasedDown)
-	{
-		releasedDown = false;
-		// if not in degraded mode, allow users to adjust
-		if (!isInDegradedMode)
-		{
-				if (userInput > coolingDifMin)
-				{
-					if (userInput <= 1000 && userInput > -1000)
-					{
-						userInput -= 1;
-					}
-					else
-					{
-						userInput -= 10;
-					}
-
-					if (userInput < coolingDifMin)
-					{
-						userInput = coolingDifMin;
-					}
-				}
-				else
-				{
-					userInput = coolingDifMin;
-				}
-		}
-	}
-	else if (heldUp)
-	{
-		// if not in degraded mode, allow users to adjust
-		if (!isInDegradedMode)
-		{
-				if (updateScreenTimerDone)
-				{
+		if(masterMode || leadLagMode){
+			// if not in degraded mode, allow users to adjust
+			if (!isInDegradedMode)
+			{
 					if (userInput < coolingDiffMax)
 					{
 						if ((userInput < 1000) && (userInput >= -1000))
@@ -1208,25 +1165,16 @@ void coolingDifferentialPosition(void)
 					{
 						userInput = coolingDiffMax;
 					}
-					updateScreenTimerDone = false;
-				}
-				else
-				{
-					if (!TI1_updateScreenTimerIsOn)
-					{
-						updateScreenRate = BUTTON_HELD_REFRESH_TIME;
-						TI1_updateScreenTimerIsOn = true;
-					}
-				}
+			}
 		}
 	}
-	else if (heldDown)
+	else if (releasedDown)
 	{
-		// if not in degraded mode, allow users to adjust
-		if (!isInDegradedMode)
-		{
-				if (updateScreenTimerDone)
-				{
+		releasedDown = false;
+		if(masterMode || leadLagMode){
+			// if not in degraded mode, allow users to adjust
+			if (!isInDegradedMode)
+			{
 					if (userInput > coolingDifMin)
 					{
 						if (userInput <= 1000 && userInput > -1000)
@@ -1247,18 +1195,92 @@ void coolingDifferentialPosition(void)
 					{
 						userInput = coolingDifMin;
 					}
-					updateScreenTimerDone = false;
-				}
-				else
-				{
-					if (!TI1_updateScreenTimerIsOn)
-					{
-						updateScreenRate = BUTTON_HELD_REFRESH_TIME;
-						TI1_updateScreenTimerIsOn = true;
-					}
-				}
+			}
 		}
 	}
+	else if (heldUp)
+	{
+		if(masterMode || leadLagMode){
+			// if not in degraded mode, allow users to adjust
+			if (!isInDegradedMode)
+			{
+					if (updateScreenTimerDone)
+					{
+						if (userInput < coolingDiffMax)
+						{
+							if ((userInput < 1000) && (userInput >= -1000))
+							{
+								userInput += 1;
+							}
+							else
+							{
+								userInput += 10;
+							}
+
+							if (userInput > coolingDiffMax)
+							{
+								userInput = coolingDiffMax;
+							}
+						}
+						else
+						{
+							userInput = coolingDiffMax;
+						}
+						updateScreenTimerDone = false;
+					}
+					else
+					{
+						if (!TI1_updateScreenTimerIsOn)
+						{
+							updateScreenRate = BUTTON_HELD_REFRESH_TIME;
+							TI1_updateScreenTimerIsOn = true;
+						}
+					}
+			}
+		}
+	}
+	else if (heldDown)
+	{
+		if(masterMode || leadLagMode){
+			// if not in degraded mode, allow users to adjust
+			if (!isInDegradedMode)
+			{
+					if (updateScreenTimerDone)
+					{
+						if (userInput > coolingDifMin)
+						{
+							if (userInput <= 1000 && userInput > -1000)
+							{
+								userInput -= 1;
+							}
+							else
+							{
+								userInput -= 10;
+							}
+
+							if (userInput < coolingDifMin)
+							{
+								userInput = coolingDifMin;
+							}
+						}
+						else
+						{
+							userInput = coolingDifMin;
+						}
+						updateScreenTimerDone = false;
+					}
+					else
+					{
+						if (!TI1_updateScreenTimerIsOn)
+						{
+							updateScreenRate = BUTTON_HELD_REFRESH_TIME;
+							TI1_updateScreenTimerIsOn = true;
+						}
+					}
+			}
+		}
+	}
+
 }
 
 void heatingSetPointPosition(void)
@@ -2093,11 +2115,11 @@ void passwordPosition(void)
 		uint16 uart_write_return;
 		switch (currentPosition.lineNumber)
 		{
-		case 1:
+		case 1: //OFF
 			uart_write_return = display_uart_update(COIL, RW_COIL_START + PASSWORD_ENABLED, false, 0, 0, PASSWORD_ENABLED_F);
 			break;
 
-		case 2:
+		case 2: //ON
 			uart_write_return = display_uart_update(COIL, RW_COIL_START + PASSWORD_ENABLED, true, 0, 0, PASSWORD_ENABLED_F);
 			break;
 
@@ -2235,7 +2257,10 @@ void modePosition(void)
 		uint16 uart_write_return;
 		switch(currentPosition.lineNumber)
 		{
-		case 1:
+		case 1: //Stand-Alone Mode
+				leadLagMode = false;
+				masterSlaveMode = false;
+				masterMode = false;
 				// write to main board to update the group control mode
 				uart_write_return = display_uart_update(REGISTER, RW_REG_START + GROUP_CONTROL_MODE, false, 1, GROUP_CONTROL_MODE_F, 0);
 				// Validation Screen
@@ -2246,7 +2271,9 @@ void modePosition(void)
 					TI1_UARTWriteTimer_Flag = true;
 				}
 			break;
-		case 2:
+		case 2: //Lead-Lag Mode
+//				leadLagMode = true;
+//				masterSlaveMode = false;
 				// write to main board to update the group control mode
 				uart_write_return = display_uart_update(REGISTER, RW_REG_START + GROUP_CONTROL_MODE, false, 2, GROUP_CONTROL_MODE_F, 0);
 				if(!uart_write_return)
@@ -2258,7 +2285,10 @@ void modePosition(void)
 				}
 				uart_write_return = display_uart_update(REGISTER, RW_REG_START + GROUP_CONTROL_SIZE, false, 2, GROUP_CONTROL_SIZE_F, 0);
 			break;
-		case 3:
+		case 3: //Master-Slave Mode
+//				leadLagMode = false;
+//				masterSlaveMode = true;
+//				masterMode = (masterSlaveMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1 && !leadLagMode ? true : false); 	//Setting the Master mode
 				// write to main board to update the group control mode
 				uart_write_return = display_uart_update(REGISTER, RW_REG_START + GROUP_CONTROL_MODE, false, 3, GROUP_CONTROL_MODE_F, 0);
 				if(!uart_write_return)

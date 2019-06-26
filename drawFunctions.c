@@ -314,7 +314,7 @@ void displayTextInMultipleLines(const unsigned char *text, const unsigned char *
 			column += 3;//Space symbol is 3 column wide.
 			if ((column + wordLength[wordIndex++]) > 127)//If the next word goes off screen...
 			{
-				line++;
+				line++; //go to the next line
 				if(isAlarm){column = 23;}
 				else{column = 5;}
 			}
@@ -360,7 +360,7 @@ void displayTextInMultipleLines(const unsigned char *text, const unsigned char *
 			else
 			{
 				drawCharacter(text[i], font, page, column);
-				column += charWidth(text[i],font);
+				column += charWidth(text[i],font); //move the index to the next character
 			}
 		}
 
@@ -369,6 +369,11 @@ void displayTextInMultipleLines(const unsigned char *text, const unsigned char *
 	}
 }
 
+
+
+void displayChineseTextInMultipleLines(const char fontTable[], int startCharNum, int numOfChar, int spaceInBetween, int* lastPage, int* lastColumn, _Bool isAlarm){
+
+}
 /* ===================================================================
 ** Function Definitions
 ** =================================================================== /

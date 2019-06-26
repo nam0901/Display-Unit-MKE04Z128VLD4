@@ -249,6 +249,7 @@ void TI1_OnInterrupt(void)
 			TI1_validationScreenTimer = 0;
 			switch (currentPosition.displayLevel)
 			{
+			//User Interface
 			case COOLING_SET_POINT_POSITION:
 				currentPosition.lineNumber = 1;
 				currentPosition.displayLevel = USER_INTERFACE_POSITION;
@@ -299,6 +300,7 @@ void TI1_OnInterrupt(void)
 				currentPosition.displayLevel = USER_INTERFACE_POSITION;
 				break;
 
+			//System Interface
 			case DOOR_SWITCH_POSITION:
 				currentPosition.lineNumber = 2;
 				currentPosition.displayLevel = SYSTEM_INTERFACE_POSITION;
@@ -324,6 +326,7 @@ void TI1_OnInterrupt(void)
 				currentPosition.displayLevel = SYSTEM_INTERFACE_POSITION;
 				break;
 
+			//Group Control Mode
 			case MODE_POSITION:
 				currentPosition.lineNumber = 1;
 				currentPosition.displayLevel = GROUP_CONTROL_MODE_POSITION;
@@ -342,7 +345,7 @@ void TI1_OnInterrupt(void)
 					default: break;
 				}
 				break;
-
+		    //Lead-Lag
 			case DIFFERENTIAL_2_POSITION:
 				currentPosition.lineNumber = 2;
 				currentPosition.displayLevel = LEAD_LAG_MODE_POSITION;
@@ -353,6 +356,7 @@ void TI1_OnInterrupt(void)
 				currentPosition.displayLevel = LEAD_LAG_MODE_POSITION;
 				break;
 
+			//Master-slave
 			case NUMBER_OF_UNITS_POSITION:
 				currentPosition.lineNumber = 2;
 				currentPosition.displayLevel = MASTER_SLAVE_MODE_POSITION;

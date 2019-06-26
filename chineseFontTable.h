@@ -38,7 +38,7 @@ extern const char modeControlModeChinese[];
 extern const char standAloneModeChinese[]; //For Mode settings
 extern const char masterSlaveControlModeChinese[]; //For Mode Settings
 extern const char leadLagControlModeChinese[]; //For Mode Settings
-
+extern const char messageChinese[]; //For Error Warnings
 
 // Alarms
 extern const char highTempChinese[];

@@ -54,6 +54,8 @@ static void enterPasswordDisplayMemory(void);																										   						
 //void displayDigitForConfirmationMessageOtherLanguage(int page, int col, int digit);       																										//
 void doScrolling(const unsigned char textZero[], const unsigned char textOne[], const unsigned char textTwo[], const unsigned char textThree[]);												//
 void cat(const unsigned char first[], const unsigned char second[], int type, int value);
+void catChinese(const char fontTable1[], int start1, int numOfChar1, const char fontTable2[], int start2, int numOfChar2, int type, int value);
+static _Bool isEmpty(int size);
 /************************************************************************************************************************************************************************************************/
 
 /******************************************************************************User Interface Declaration****************************************************************************************/
@@ -276,10 +278,26 @@ void mainScreenDisplayMemory(void)
 				char cchar[6] = {' ',' ',' ',' ',' ',' '};
 				uint8_t a = modbus_rw_reg_rcv[UNIT_ID].ivalue;
 				uint8_t b = modbus_rw_reg_rcv[GROUP_CONTROL_SIZE].ivalue;
+
+				//Scan the group control mode of the system
+				//Do comparison here to update the unitID ( uintID > # of units ? unitID -=1 : remain value)
+				// If master changes to Stand-Alone mode, # of units - 1
+				// The next unitID becomes master
+
+
 				switch(modbus_ro_reg_rcv[GROUP_CONT_MODE_STATUS].ivalue)
 				{
-					case 2:	sprintf(cchar, "%d", a);		break; //lead/lag
-					case 3:	sprintf(cchar, "%d:%d", a, b);	break; //master/slave
+					case 2:	//lead/lag
+						leadLagMode = true;
+						masterSlaveMode = false;
+						sprintf(cchar, "%d", a);
+					break;
+					case 3:	//master/slave
+						leadLagMode = false;
+						masterSlaveMode = true;
+						masterMode = (masterSlaveMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1 && !leadLagMode ? true : false); 	//Setting the Master mode
+						sprintf(cchar, "%d:%d", a, b);
+					break;
 					default: break;
 				}
 				displayTextInOneLine(cchar, arial14, 0, 2);
@@ -1496,10 +1514,11 @@ void doScrolling(const unsigned char textZero[], const unsigned char textOne[], 
 //Combine up to two strings and a formatted value to print with displayTextInMultipleLines
 void cat(const unsigned char first[], const unsigned char second[], int type, int value)
 {
-	char prelim[6], result[100];
+	char result[100];
+	char prelim[10] = {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '};
 	int a, b;
-
 	strcpy(result, first);
+
 	if(!strcmp(second,"\0"))	{strcat(result, second);}
 	switch(type)
 	{
@@ -1507,12 +1526,12 @@ void cat(const unsigned char first[], const unsigned char second[], int type, in
 			a = value/10;
 			b = value%10;
 			if(value < 0)
-			{
+			{	//Negative number
 				if(value > 999)	{sprintf(prelim, "-%d  ", a);}
 				else			{sprintf(prelim, "-%d.%d  ", a, b);}
 			}
 			else
-			{
+			{	//Postive value
 				if(value > 999)	{sprintf(prelim, "%d  ", a);}
 				else			{sprintf(prelim, "%d.%d  ", a, b);}
 			}
@@ -1542,10 +1561,87 @@ void cat(const unsigned char first[], const unsigned char second[], int type, in
 
 		default: break;
 	}
+
 	strcat(result, prelim);
 	if(!strcmp(second,"\0") && type == 0){strcat(result, " ");}
 	displayTextInMultipleLines(result, arial14, &pgg, &ncol, false);
 	if(type == 1){showDegree(pgg, ncol-3);}
+}
+
+// a ? b : c evaluates to b if the value of a is true, and otherwise to c.
+static _Bool isEmpty(int size){
+	return size > 0 ? true:false;
+}
+
+void catChinese(const char fontTable1[], int start1, int numOfChar1, const char fontTable2[], int start2, int numOfChar2, int type, int value){
+	int a, b;
+	int size = (numOfChar1 - start1 ) + (numOfChar2 - start2 ) + 10; // "\0" at the end
+	//Copy the first part
+	char totalTable[size], prelim[10];
+	int index = numOfChar1 - start1;
+	for(int i = 0; i < index; i++){
+		totalTable[i] = fontTable1[i];
+	}
+
+	//Copy the second part
+	if(!isEmpty(numOfChar2 - start2)){
+		for(int j = sizeof(fontTable1); j < sizeof(fontTable2);  j++){
+			if(index < numOfChar2){
+				totalTable[j] = fontTable2[index];
+				index++;
+			}else{
+				break;
+			}
+
+		}
+	}
+
+	switch(type)
+		{
+			case TEMPERATURE:
+				a = value/10;
+				b = value%10;
+				if(value < 0)
+				{
+					if(value > 999)	{sprintf(prelim, "-%d  ", a);}
+					else			{sprintf(prelim, "-%d.%d  ", a, b);}
+				}
+				else
+				{
+					if(value > 999)	{sprintf(prelim, "%d  ", a);}
+					else			{sprintf(prelim, "%d.%d  ", a, b);}
+				}
+				break;
+
+			case MIN_SEC:
+				a = value/60;
+				b = value%60;
+				if(b < 10)	{sprintf(prelim, "%dm 0%ds ", a, b);}
+				else		{sprintf(prelim, "%dm %ds ", a, b);}
+				break;
+
+			case HOUR:
+				sprintf(prelim, "%d h ", value);
+				break;
+
+			case MIN_SEC_COLON:
+				a = value/60;
+				b = value%60;
+				if(b < 10)	{sprintf(prelim, "%d:0%d ", a, b);}
+				else		{sprintf(prelim, "%d:%d ", a, b);}
+				break;
+
+			case INTEGER:
+				sprintf(prelim, "%d ", value);
+				break;
+
+			default: break;
+		}
+		//Need to convert the integer into chinese font
+	displayChineseTextInMultipleLines(totalTable, 0, size,0, &pgg, &ncol, false);
+
+	if(type == 1){showDegree(pgg, ncol-3);}
+
 }
 
 /******************************************Helper Routine Used in User Interface Closing*********************************************/
@@ -2063,6 +2159,7 @@ void tempScaleDisplayMemory(void)
 	clearOneLine(2);
 	clearOneLine(4);
 	clearOneLine(6);
+	char result[100];
 	if (parameterIsSet && showValidationScreen)
 	{
 		if (modbus_rw_coil_rcv[UNIT_OF_MEASURE/8] & UNIT_OF_MEASURE_F) // degree F
@@ -2070,10 +2167,10 @@ void tempScaleDisplayMemory(void)
 			switch(currentLanguage)
 			{
 				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
-			    	cat(currentTextTable[TEXT_INDEX_TempScaleIsSetTo],
-						currentTextTable[TEXT_INDEX_Fahrenheit],
-						NOVALUE,
-						NOVALUE);
+					strcpy(result,currentTextTable[TEXT_INDEX_TempScaleIsSetTo]);
+					strcat(result, currentTextTable[TEXT_INDEX_Fahrenheit]);
+			    	displayTextInMultipleLines(result, arial14, &pgg, &ncol, false);
+
 					break;
 				case CHINESE:
 					displayChineseTextInOneLine(userInterfaceChinese, 30, 33, 0, 2, 10);
@@ -2088,11 +2185,14 @@ void tempScaleDisplayMemory(void)
 			switch(currentLanguage)
 			{
 				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
-					cat(currentTextTable[TEXT_INDEX_TempScaleIsSetTo],
-						currentTextTable[TEXT_INDEX_Celsius],
-						NOVALUE,
-						NOVALUE);
-					break;
+
+					strcpy(result,currentTextTable[TEXT_INDEX_TempScaleIsSetTo]);
+					strcat(result, currentTextTable[TEXT_INDEX_Celsius]);
+					displayTextInMultipleLines(result, arial14, &pgg, &ncol, false);
+
+
+
+						break;
 				case CHINESE:
 					displayChineseTextInOneLine(userInterfaceChinese, 30, 33, 0, 2, 10);
 					displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 2, 66);
@@ -2139,6 +2239,7 @@ void hysteresisDisplayMemory(void)
 	clearOneLine(2);
 	clearOneLine(4);
 	clearOneLine(6);
+	char temp[100];
 	if (parameterIsSet && showValidationScreen)
 	{
 		if (modbus_rw_coil_rcv[COOL_HYSTERESIS/8] & COOL_HYSTERESIS_F) // Negative
@@ -2146,10 +2247,14 @@ void hysteresisDisplayMemory(void)
 			switch(currentLanguage)
 			{
 				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
-					cat(currentTextTable[TEXT_INDEX_DifferentialIsSetTo],
-						currentTextTable[TEXT_INDEX_Negative],
-						NOVALUE,
-						NOVALUE);
+//					cat(currentTextTable[TEXT_INDEX_DifferentialIsSetTo],
+//						currentTextTable[TEXT_INDEX_Negative],
+//						NOVALUE,
+//						NOVALUE);
+					strcpy(temp, currentTextTable[TEXT_INDEX_DifferentialIsSetTo]);
+					strcat(temp,currentTextTable[TEXT_INDEX_Negative]);
+					displayTextInMultipleLines(temp, arial14, &pgg, &ncol, false);
+
 					break;
 				case CHINESE:
 					displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 3, 5);
@@ -2163,10 +2268,13 @@ void hysteresisDisplayMemory(void)
 			switch(currentLanguage)
 			{
 				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
-					cat(currentTextTable[TEXT_INDEX_DifferentialIsSetTo],
-						currentTextTable[TEXT_INDEX_Positive],
-						NOVALUE,
-						NOVALUE);
+//					cat(currentTextTable[TEXT_INDEX_DifferentialIsSetTo],
+//						currentTextTable[TEXT_INDEX_Positive],
+//						NOVALUE,
+//						NOVALUE);
+					strcpy(temp, currentTextTable[TEXT_INDEX_DifferentialIsSetTo]);
+					strcat(temp,currentTextTable[TEXT_INDEX_Positive]);
+					displayTextInMultipleLines(temp, arial14, &pgg, &ncol, false);
 					break;
 				case CHINESE:
 					displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 3, 5);
@@ -2253,7 +2361,7 @@ void languageDisplayMemory(void)
 	    {
 	        case 1: case 2: case 3:
 	    		displayTextInOneLine(currentTextTable[TEXT_INDEX_English], arial14, 2, MENU_ITEM_START_COLUMN);
-				displayChineseTextInOneLine(languageMenuChinese, 0, 1, 0, 4, MENU_ITEM_START_COLUMN); //from 0 to 1
+				displayChineseTextInOneLine(languageMenuChinese, 0, 1, 0, 4, MENU_ITEM_START_COLUMN);
 	    		displayTextInOneLine(currentTextTable[TEXT_INDEX_French], arial14, 6, MENU_ITEM_START_COLUMN);
 	            break;
 	        case 4: case 5: case 6:

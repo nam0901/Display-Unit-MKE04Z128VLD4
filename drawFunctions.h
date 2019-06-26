@@ -51,6 +51,7 @@ void displayTextInOneLineHighlighted (const unsigned char string[], const unsign
 void displayChineseTextInOneLine(const char fontTable[], int startCharNum, int numOfChar, int spaceInBetween, int startPage, int startColumn);
 void displayChineseTextInOneLineHighlighted(const char fontTable[], int startCharNum, int numOfChar, int spaceInBetween, int startPage, int startColumn);
 void displayTextInMultipleLines(const unsigned char *text, const unsigned char *font, int* lastPage, int* lastColumn, _Bool isAlarm);
+void displayChineseTextInMultipleLines(const char fontTable[], int startCharNum, int numOfChar, int spaceInBetween, int* lastPage, int* lastColumn, _Bool isAlarm);
 
 // Digit
 void drawDigit(const char font[], unsigned char digit, unsigned char heightInPages, unsigned char widthInRows, unsigned char page, unsigned char column);

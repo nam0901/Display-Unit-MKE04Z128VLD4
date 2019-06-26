@@ -79,12 +79,14 @@
 
 // Firmware & Hardware Versions
 #define DU_FIRMWARE_VERSION_MAJOR	'1'
-#define DU_FIRMWARE_VERSION_MINOR	'5'
+#define DU_FIRMWARE_VERSION_MINOR	'6'
 #define DU_HARDWARE_VERSION_MAJOR	'5'
 #define DU_HARDWARE_VERSION_MINOR	'0'
 
 // bootload boolean
 _Bool goToBootload;
+
+
 
 // Communication Error Count
 #define LOST_COMMUNICATION_COUNT    1000
@@ -216,6 +218,8 @@ int main(void)
 	heldUp = false;
 	heldDown = false;
 
+
+
 	// "displayMemory.h"
 	updateDisplayMemory = false;
 	refreshScreen = true;
@@ -225,7 +229,7 @@ int main(void)
 	currentTextTable = englishText;
 
 	// "displayPosition.h"
-	currentPosition.displayLevel = MAIN_SCREEN_POSITION;
+	currentPosition.displayLevel = COMPANY_ICON_POSITION;
 	currentPosition.lineNumber   = INLET_LINENUM;
 
 	updateDisplayPosition = true;
@@ -364,21 +368,20 @@ int main(void)
 		}
 		else
 		{
+
 			/* Read User Input */
 			scanButton();
 
 			/* Check Degraded Mode */
 //			uint16 uart_write_return;
 
-			// updateDisplayPosition needs to be set from scanButton() function. So if there is no pressed, the screen does not update
-			//the master/slave number
-
-
 			/* Update Positions */
 			checkDisplayPosition();
 
 			/* Update display Memory */
 			checkDisplayMemory();
+
+
 
 			/* Communication: UART + I2C */
 			display_uart_run_return = display_uart_run();
@@ -388,6 +391,7 @@ int main(void)
 			{
 				commErrorCount+=1;
 			}
+
 			else
 			{
 				lostCommunication = false;

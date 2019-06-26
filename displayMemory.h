@@ -1,6 +1,9 @@
 #ifndef __DISPLAY_MEMORY_H
 #define __DISPLAY_MEMORY_H
 
+#include <stdio.h>
+#include <string.h>
+
 #define ENGLISH	 1
 #define CHINESE  2
 #define FRENCH   3
