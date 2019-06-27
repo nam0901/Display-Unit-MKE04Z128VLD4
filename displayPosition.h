@@ -130,6 +130,7 @@ extern int alarmOutput[];
 extern int alarmOutputIndex;
 extern int alarmStartPosition;
 
+extern _Bool standAloneMode;
 extern _Bool masterMode;
 extern _Bool leadLagMode;
 extern _Bool masterSlaveMode;

@@ -288,11 +288,13 @@ void mainScreenDisplayMemory(void)
 				switch(modbus_ro_reg_rcv[GROUP_CONT_MODE_STATUS].ivalue)
 				{
 					case 2:	//lead/lag
+						standAloneMode = false;
 						leadLagMode = true;
 						masterSlaveMode = false;
 						sprintf(cchar, "%d", a);
 					break;
 					case 3:	//master/slave
+						standAloneMode = false;
 						leadLagMode = false;
 						masterSlaveMode = true;
 						masterMode = (masterSlaveMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1 && !leadLagMode ? true : false); 	//Setting the Master mode
@@ -1043,10 +1045,12 @@ void showSelectArrow(void)
 		if(SysSettingArrowPosition||SysIntArrowPosition)
 		{
 			SysSettingArrowPosition = false;
+		//	void drawIcon(const char icon[], int width, unsigned char pageNum, unsigned char page, unsigned char col) // pageNum: how many pages the icon uses.
 			drawIcon(selectArrow, 5, 2, 6, 1);
 		}
 		else
 		{
+
 			drawIcon(selectArrow, 5, 2, 6, 3);
 		}
 	}
@@ -1055,11 +1059,12 @@ void showSelectArrow(void)
 		if(SysIntArrowPosition ||SysSettingArrowPosition)
 		{
 			SysIntArrowPosition = false;
+
 			drawIcon(selectArrow, 5, 2, (currentPosition.lineNumber%3)*2, 1);
 		}
 		else
 		{
-			drawIcon(selectArrow, 5, 2, (currentPosition.lineNumber%3)*2, 3);
+				drawIcon(selectArrow, 5, 2, (currentPosition.lineNumber%3)*2 , 3);
 		}
 	}
 
@@ -1638,7 +1643,7 @@ void catChinese(const char fontTable1[], int start1, int numOfChar1, const char 
 			default: break;
 		}
 		//Need to convert the integer into chinese font
-	displayChineseTextInMultipleLines(totalTable, 0, size,0, &pgg, &ncol, false);
+
 
 	if(type == 1){showDegree(pgg, ncol-3);}
 
@@ -2184,7 +2189,7 @@ void tempScaleDisplayMemory(void)
 		{
 			switch(currentLanguage)
 			{
-				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
+				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
 
 					strcpy(result,currentTextTable[TEXT_INDEX_TempScaleIsSetTo]);
 					strcat(result, currentTextTable[TEXT_INDEX_Celsius]);
@@ -2246,7 +2251,7 @@ void hysteresisDisplayMemory(void)
 		{
 			switch(currentLanguage)
 			{
-				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
+				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
 //					cat(currentTextTable[TEXT_INDEX_DifferentialIsSetTo],
 //						currentTextTable[TEXT_INDEX_Negative],
 //						NOVALUE,
@@ -2267,7 +2272,7 @@ void hysteresisDisplayMemory(void)
 		{
 			switch(currentLanguage)
 			{
-				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
+				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
 //					cat(currentTextTable[TEXT_INDEX_DifferentialIsSetTo],
 //						currentTextTable[TEXT_INDEX_Positive],
 //						NOVALUE,
@@ -2330,7 +2335,7 @@ void languageDisplayMemory(void)
 	{
 		switch(currentLanguage)
 		{
-			case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
+			case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
 		    	displayTextInMultipleLines(currentTextTable[TEXT_INDEX_UpdatingLanguageSettings], arial14, &pgg, &ncol, false);
 				break;
 			case CHINESE:
@@ -2401,7 +2406,7 @@ void passwordDisplayMemory(void)
 		{
 			switch(currentLanguage)
 			{
-				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
+				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
 					displayTextInMultipleLines(currentTextTable[TEXT_INDEX_PasscodeForUserInterfaceIsOn], arial14, &pgg, &ncol, false);
 					break;
 				case CHINESE:
@@ -2415,7 +2420,7 @@ void passwordDisplayMemory(void)
 		{
 			switch(currentLanguage)
 			{
-				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:case POLISH:
+				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
 					displayTextInMultipleLines(currentTextTable[TEXT_INDEX_PasscodeForUserInterfaceIsOff], arial14, &pgg, &ncol, false);
 					break;
 				case CHINESE:
@@ -2598,7 +2603,7 @@ void modeDisplayMemory(void)
 					break;
 				default: break;
 			}
-			//add German case
+
 		}
 		else
 		{
@@ -2809,22 +2814,20 @@ void differential2DisplayMemory(void)
 		{
 			displayChineseTextInOneLine(leadLagControlModeChinese, 6, 8, 0, 2, 10); 	//differential two
 			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
-//			displayChineseTextInOneLine(userInterfaceChinese, 4, 8, 0, 2, 10);
-//			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 2, 80);
-//			int num = modbus_rw_reg_rcv[COOLING_SP].ivalue;
-//			char col = 35;
-//			if(num)
-//			drawIntegerRightAligned(digitCourier2x7,num/10, 2, 7, 4, 30);
-//			if(num < 1000) // less than 100
-//			{
-//				drawCharacter('.', arial14, 4, 30);
-//				drawDigit(digitCourier2x7, num%10, 2, 7, 4, 33);
-//				col = 45;
-//			}
-//			showDegree(4, col);
-//			break;
-			int digit = modbus_rw_reg_rcv[COOLING_DIF_2].ivalue;
-			//displayDigitForConfirmationMessageOtherLanguage( 5, 4, digit);
+//			int digit = modbus_rw_reg_rcv[COOLING_DIF_2].ivalue;
+//			drawDigit(digitCourier2x7, digit/10, 2, 7, 4, 60);
+//			drawDigit(digitCourier2x7, digit%10, 2, 7, 4, 67);
+			int num = modbus_rw_reg_rcv[COOLING_DIF_2].ivalue;
+			char col = 35;
+			if(num)
+			drawIntegerRightAligned(digitCourier2x7,num/10, 2, 7, 4, 30);
+			if(num < 1000) // less than 100
+			{
+				drawCharacter('.', arial14, 4, 30);
+				drawDigit(digitCourier2x7, num%10, 2, 7, 4, 33);
+				col = 45;
+			}
+			showDegree(4, col);
 		}
     	TI1_validationScreenTimer_Flag = true;
 	}
@@ -2906,7 +2909,7 @@ void controlStrategyDisplayMemory(void)
 		}
 		else
 		{
-			displayChineseTextInOneLineHighlighted(leadLagControlModeChinese, 22, 23, 0, 0, 10);	//control strategy
+			displayChineseTextInOneLineHighlighted(leadLagControlModeChinese, 9, 12, 0, 0, 10);	//control strategy
 		}
 		drawIntegerLeftAligned(digitCalibriLight4x28, userInput, 4, 28, 3, 36);
 	}

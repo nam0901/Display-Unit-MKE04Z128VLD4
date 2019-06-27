@@ -303,7 +303,8 @@ uint16 	sec_1s_cnt;
 //extern uint8 rx_cnt;										// increments when packet is complete
 
 extern _Bool goToBootload;									// use for user application to go to bootload mode
-extern _Bool positiveDiff;
+extern _Bool positiveDiff;									// use for user application to check postive hysteris
+
 extern uint16_union modbus_rw_reg_rcv[RW_REG_LEN];			// read/write registers, modbus 1-23
 extern uint16_union modbus_rw_reg_snd[RW_REG_LEN];			// read/write registers, modbus 1-23
 extern uint16_union modbus_ro_reg_rcv[RO_REG_LEN];			// read only registers, modbus 201-220 237-240

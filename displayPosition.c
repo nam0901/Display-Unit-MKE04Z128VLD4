@@ -8,10 +8,13 @@
 #include "displayMemory.h"
 #include "textTable.h"
 #include "drawFunctions.h"
+#include <stdio.h>
+#include <math.h>
 
 uint16_union modbus_ro_reg_rcv[RO_REG_LEN];		//read only registers controller copy
 byte modbus_rw_coil_rcv[RW_COIL_LEN/8+1];		//read/write coils controller copy
 uint16_union modbus_ero_reg_rcv[ERO_REG_LEN+1]; //extended read only registers, modbus 501-509 599
+_Bool standAloneMode;
 _Bool masterMode;
 _Bool leadLagMode;
 _Bool masterSlaveMode;
@@ -942,7 +945,7 @@ void alarmPosition(void)
 
 void coolingSetPointPosition(void)
 {
-	int coolingMax = modbus_ro_reg_rcv[COOL_SP_MAX].ivalue; //The maximum value = 46?
+	int coolingMax = modbus_ro_reg_rcv[COOL_SP_MAX].ivalue;
 	int coolingMin = modbus_ro_reg_rcv[COOL_SP_MIN].ivalue; //do this to solve compilation time and stack call
 
 	if (releasedBack)
@@ -971,7 +974,7 @@ void coolingSetPointPosition(void)
 	{
 
 		releasedUp = false;
-			if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
+			if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) || standAloneMode ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1007,7 +1010,7 @@ void coolingSetPointPosition(void)
 	else if (releasedDown)
 	{
 		releasedDown = false;
-		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) || standAloneMode ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1042,7 +1045,7 @@ void coolingSetPointPosition(void)
 	}
 	else if (heldUp)
 	{
-		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) || standAloneMode ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1089,7 +1092,7 @@ void coolingSetPointPosition(void)
 	}
 	else if (heldDown)
 	{
-		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) || standAloneMode ){
 		// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1164,7 +1167,7 @@ void coolingDifferentialPosition(void)
 	{
 
 		releasedUp = false;
-		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) || standAloneMode ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1194,7 +1197,7 @@ void coolingDifferentialPosition(void)
 	else if (releasedDown)
 	{
 		releasedDown = false;
-		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) || standAloneMode ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1223,7 +1226,7 @@ void coolingDifferentialPosition(void)
 	}
 	else if (heldUp)
 	{
-		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) || standAloneMode ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1264,7 +1267,7 @@ void coolingDifferentialPosition(void)
 	}
 	else if (heldDown)
 	{
-		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) ){
+		if(masterMode || (leadLagMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1) || standAloneMode ){
 			// if not in degraded mode, allow users to adjust
 			if (!isInDegradedMode)
 			{
@@ -1459,7 +1462,9 @@ void heatingDifferentialPosition(void)
 	else if (releasedOK)
 	{
 		releasedOK = false;
+
 		uint16 uart_write_return;
+
 		uart_write_return = display_uart_update(REGISTER, RW_REG_START + HEATING_DIF, false, userInput, HEATING_DIF_F, 0);
 
 		// Validation Screen
@@ -1592,13 +1597,14 @@ void highTempAlarmPosition(void) //Default: 125 F, Range: 100 - 140 F
 {
 	int highTempMax = modbus_rw_reg_rcv[HIGH_TEMP_SP_MAX].ivalue;
 	int highTempMin = modbus_rw_reg_rcv[HIGH_TEMP_SP_MIN].ivalue;
-
+//	int highTempMax = 0;
+//	int highTempMin = 0;
 //	if (modbus_rw_coil_rcv[UNIT_OF_MEASURE/8] & UNIT_OF_MEASURE_F){ //degree F
-//		int highTempMax = 1400;
-//		int highTempMin = 1000;
+//		highTempMax = 1400;
+//		highTempMin = 1000;
 //	}else{ //degree C
-//		int highTempMax = 600;
-//		int highTempMin = 380;
+//		highTempMax = 600;
+//		highTempMin = 380;
 //	}
 
 
@@ -1619,6 +1625,14 @@ void highTempAlarmPosition(void) //Default: 125 F, Range: 100 - 140 F
 	{
 		releasedOK = false;
 		uint16 uart_write_return;
+
+
+		if(userInput > highTempMax){
+			userInput = highTempMax;
+		}else if(userInput < highTempMin){
+			userInput = highTempMin;
+		}
+
 		uart_write_return = display_uart_update(REGISTER, RW_REG_START + HIGH_TEMP_ALARM_SP, false, userInput, HIGH_TEMP_ALARM_SP_F, 0);
 		// Validation Screen
 		parameterIsSet = true;
@@ -1749,13 +1763,14 @@ void lowTempAlarmPosition(void) //Default: 40 F. Range: 0 - 60 F
 {
 	int lowTempMax = modbus_rw_reg_rcv[LOW_TEMP_SP_MAX].ivalue;
 	int lowTempMin = modbus_rw_reg_rcv[LOW_TEMP_SP_MIN].ivalue;
-
+//	int lowTempMax = 0;
+//	int lowTempMin = 0;
 //	if (modbus_rw_coil_rcv[UNIT_OF_MEASURE/8] & UNIT_OF_MEASURE_F){ //degree F
-//		int lowTempMax = 6000;
-//		int lowTempMin = 0;
+//		lowTempMax = 6000;
+//		lowTempMin = 0;
 //	}else{
-//		int lowTempMax = 155;
-//		int lowTempMin = - 177;
+//		lowTempMax = 155;
+//		lowTempMin = - 177;
 //	}
 
 	char lineNumTemp = 4; // heater not present
@@ -1775,6 +1790,12 @@ void lowTempAlarmPosition(void) //Default: 40 F. Range: 0 - 60 F
 	else if (releasedOK)
 	{
 		releasedOK = false;
+		if(userInput > lowTempMax){
+			userInput = lowTempMax;
+		}else if(userInput < lowTempMin){
+			userInput = lowTempMin;
+		}
+
 		uint16 uart_write_return;
 		// write to main board to update the coolingSP
 		uart_write_return = display_uart_update(REGISTER, RW_REG_START + LOW_TEMP_ALARM_SP, false, userInput, LOW_TEMP_ALARM_SP_F, 0);
@@ -2301,6 +2322,7 @@ void modePosition(void)
 		switch(currentPosition.lineNumber)
 		{
 		case 1: //Stand-Alone Mode
+				standAloneMode = true;
 				leadLagMode = false;
 				masterSlaveMode = false;
 				masterMode = false;
@@ -2315,8 +2337,7 @@ void modePosition(void)
 				}
 			break;
 		case 2: //Lead-Lag Mode
-//				leadLagMode = true;
-//				masterSlaveMode = false;
+
 				// write to main board to update the group control mode
 				uart_write_return = display_uart_update(REGISTER, RW_REG_START + GROUP_CONTROL_MODE, false, 2, GROUP_CONTROL_MODE_F, 0);
 				if(!uart_write_return)
@@ -2329,9 +2350,7 @@ void modePosition(void)
 				uart_write_return = display_uart_update(REGISTER, RW_REG_START + GROUP_CONTROL_SIZE, false, 2, GROUP_CONTROL_SIZE_F, 0);
 			break;
 		case 3: //Master-Slave Mode
-//				leadLagMode = false;
-//				masterSlaveMode = true;
-//				masterMode = (masterSlaveMode && modbus_rw_reg_rcv[UNIT_ID].ivalue==1 && !leadLagMode ? true : false); 	//Setting the Master mode
+
 				// write to main board to update the group control mode
 				uart_write_return = display_uart_update(REGISTER, RW_REG_START + GROUP_CONTROL_MODE, false, 3, GROUP_CONTROL_MODE_F, 0);
 				if(!uart_write_return)

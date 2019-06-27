@@ -86,8 +86,6 @@
 // bootload boolean
 _Bool goToBootload;
 
-
-
 // Communication Error Count
 #define LOST_COMMUNICATION_COUNT    1000
 
@@ -218,7 +216,7 @@ int main(void)
 	heldUp = false;
 	heldDown = false;
 	positiveDiff = true; //By default it is Positive
-
+	standAloneMode = true; //Stand Alone mode by default
 
 	// "displayMemory.h"
 	updateDisplayMemory = false;

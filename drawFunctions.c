@@ -235,7 +235,7 @@ void displayChineseTextInOneLine(const char fontTable[], int startCharNum, int e
 					for (int j = startColumn; j < startColumn+CHINESE_CHAR_WIDTH; j++)
 					{
 						I2CDataBuffer[i][j] = fontTable[index++];
-//						index++:
+
 					}
 				}
 				startColumn = startColumn + CHINESE_CHAR_WIDTH + spaceInBetween;
@@ -371,9 +371,6 @@ void displayTextInMultipleLines(const unsigned char *text, const unsigned char *
 
 
 
-void displayChineseTextInMultipleLines(const char fontTable[], int startCharNum, int numOfChar, int spaceInBetween, int* lastPage, int* lastColumn, _Bool isAlarm){
-
-}
 /* ===================================================================
 ** Function Definitions
 ** =================================================================== /
