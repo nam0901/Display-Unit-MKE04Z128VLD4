@@ -1590,10 +1590,17 @@ void heatingDifferentialPosition(void)
 
 void highTempAlarmPosition(void) //Default: 125 F, Range: 100 - 140 F
 {
-//	int highTempMax = modbus_rw_reg_rcv[HIGH_TEMP_SP_MAX].ivalue;
-//	int highTempMin = modbus_rw_reg_rcv[HIGH_TEMP_SP_MIN].ivalue;
-	int highTempMax = 1400;
-	int highTempMin = 1000;
+	int highTempMax = modbus_rw_reg_rcv[HIGH_TEMP_SP_MAX].ivalue;
+	int highTempMin = modbus_rw_reg_rcv[HIGH_TEMP_SP_MIN].ivalue;
+
+//	if (modbus_rw_coil_rcv[UNIT_OF_MEASURE/8] & UNIT_OF_MEASURE_F){ //degree F
+//		int highTempMax = 1400;
+//		int highTempMin = 1000;
+//	}else{ //degree C
+//		int highTempMax = 600;
+//		int highTempMin = 380;
+//	}
+
 
 	char lineNumTemp = 3; //heater not present
 	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) //heater present
@@ -1740,12 +1747,16 @@ void highTempAlarmPosition(void) //Default: 125 F, Range: 100 - 140 F
 
 void lowTempAlarmPosition(void) //Default: 40 F. Range: 0 - 60 F
 {
-//	int lowTempMax = modbus_rw_reg_rcv[LOW_TEMP_SP_MAX].ivalue;
-//	int lowTempMin = modbus_rw_reg_rcv[LOW_TEMP_SP_MIN].ivalue;
+	int lowTempMax = modbus_rw_reg_rcv[LOW_TEMP_SP_MAX].ivalue;
+	int lowTempMin = modbus_rw_reg_rcv[LOW_TEMP_SP_MIN].ivalue;
 
-	int lowTempMax = 6000;
-	int lowTempMin = 0;
-
+//	if (modbus_rw_coil_rcv[UNIT_OF_MEASURE/8] & UNIT_OF_MEASURE_F){ //degree F
+//		int lowTempMax = 6000;
+//		int lowTempMin = 0;
+//	}else{
+//		int lowTempMax = 155;
+//		int lowTempMin = - 177;
+//	}
 
 	char lineNumTemp = 4; // heater not present
 
