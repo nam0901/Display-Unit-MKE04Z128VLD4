@@ -2869,34 +2869,18 @@ void controlStrategyDisplayMemory(void)
 				currentTextTable[TEXT_INDEX_IsSetTo],
 				HOUR,
 				modbus_rw_reg_rcv[CONTROL_STRATEGY].ivalue);
-//			displayTextInOneLine(currentTextTable[TEXT_INDEX_ControlStrategy], arial14, 1, 10);
-//			displayTextInOneLine(currentTextTable[TEXT_INDEX_IsSetTo], arial14, 3, 10);
-//			int digit = modbus_rw_reg_rcv[CONTROL_STRATEGY].ivalue;
-//			drawDigit(digitCourier2x7, digit/10, 2, 7, 5, 10);
-//			drawDigit(digitCourier2x7, digit%10, 2, 7, 5, 17);
-//			displayTextInOneLine("h", arial14, 5, 24);
+
 		}
 		else
 		{
-			displayChineseTextInOneLine(leadLagControlModeChinese, 9, 12, 0, 2, 10);	//control strategy
+
+
+			displayChineseTextInOneLine(leadLagControlModeChinese, 9, 12, 0, 2, MENU_ITEM_START_COLUMN);	//control strategy
 			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
-			int digit = modbus_rw_reg_rcv[CONTROL_STRATEGY].ivalue;
-			drawDigit(digitCourier2x7, digit/10, 2, 7, 4, 60);
-			drawDigit(digitCourier2x7, digit%10, 2, 7, 4, 67);
-			displayChineseTextInOneLine(groupControlModeChinese, 11, 12, 0, 4, 10);	//hours
-//			displayChineseTextInOneLine(userInterfaceChinese, 4, 8, 0, 2, 10);
-//			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 2, 80);
-//			int num = modbus_rw_reg_rcv[COOLING_SP].ivalue;
-//			char col = 35;
-//			if(num)
-//			drawIntegerRightAligned(digitCourier2x7,num/10, 2, 7, 4, 30);
-//			if(num < 1000) // less than 100
-//			{
-//				drawCharacter('.', arial14, 4, 30);
-//				drawDigit(digitCourier2x7, num%10, 2, 7, 4, 33);
-//				col = 45;
-//			}
-//			showDegree(4, col);
+			int num = modbus_rw_reg_rcv[CONTROL_STRATEGY].ivalue;
+			drawIntegerRightAligned(digitCourier2x7,num, 2, 7, 6, 20);
+			displayChineseTextInOneLine(groupControlModeChinese, 11, 12, 0, 6, 25);	//hours
+
 		}
     	TI1_validationScreenTimer_Flag = true;
 	}

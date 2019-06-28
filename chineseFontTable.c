@@ -1153,10 +1153,4 @@ const char masterSlaveControlModeChinese[] ={
 
 };
 
-//For Message Warnings
-const char messageChinese[] = {
-
-
-
-};
 

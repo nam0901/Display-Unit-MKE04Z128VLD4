@@ -1592,21 +1592,10 @@ void heatingDifferentialPosition(void)
 		}
 	}
 }
-
-void highTempAlarmPosition(void) //Default: 125 F, Range: 100 - 140 F
+void highTempAlarmPosition(void)
 {
 	int highTempMax = modbus_rw_reg_rcv[HIGH_TEMP_SP_MAX].ivalue;
 	int highTempMin = modbus_rw_reg_rcv[HIGH_TEMP_SP_MIN].ivalue;
-//	int highTempMax = 0;
-//	int highTempMin = 0;
-//	if (modbus_rw_coil_rcv[UNIT_OF_MEASURE/8] & UNIT_OF_MEASURE_F){ //degree F
-//		highTempMax = 1400;
-//		highTempMin = 1000;
-//	}else{ //degree C
-//		highTempMax = 600;
-//		highTempMin = 380;
-//	}
-
 
 	char lineNumTemp = 3; //heater not present
 	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) //heater present
@@ -1625,14 +1614,6 @@ void highTempAlarmPosition(void) //Default: 125 F, Range: 100 - 140 F
 	{
 		releasedOK = false;
 		uint16 uart_write_return;
-
-
-		if(userInput > highTempMax){
-			userInput = highTempMax;
-		}else if(userInput < highTempMin){
-			userInput = highTempMin;
-		}
-
 		uart_write_return = display_uart_update(REGISTER, RW_REG_START + HIGH_TEMP_ALARM_SP, false, userInput, HIGH_TEMP_ALARM_SP_F, 0);
 		// Validation Screen
 		parameterIsSet = true;
@@ -1759,20 +1740,10 @@ void highTempAlarmPosition(void) //Default: 125 F, Range: 100 - 140 F
 	}
 }
 
-void lowTempAlarmPosition(void) //Default: 40 F. Range: 0 - 60 F
+void lowTempAlarmPosition(void)
 {
 	int lowTempMax = modbus_rw_reg_rcv[LOW_TEMP_SP_MAX].ivalue;
 	int lowTempMin = modbus_rw_reg_rcv[LOW_TEMP_SP_MIN].ivalue;
-//	int lowTempMax = 0;
-//	int lowTempMin = 0;
-//	if (modbus_rw_coil_rcv[UNIT_OF_MEASURE/8] & UNIT_OF_MEASURE_F){ //degree F
-//		lowTempMax = 6000;
-//		lowTempMin = 0;
-//	}else{
-//		lowTempMax = 155;
-//		lowTempMin = - 177;
-//	}
-
 	char lineNumTemp = 4; // heater not present
 
 	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
@@ -1790,12 +1761,6 @@ void lowTempAlarmPosition(void) //Default: 40 F. Range: 0 - 60 F
 	else if (releasedOK)
 	{
 		releasedOK = false;
-		if(userInput > lowTempMax){
-			userInput = lowTempMax;
-		}else if(userInput < lowTempMin){
-			userInput = lowTempMin;
-		}
-
 		uint16 uart_write_return;
 		// write to main board to update the coolingSP
 		uart_write_return = display_uart_update(REGISTER, RW_REG_START + LOW_TEMP_ALARM_SP, false, userInput, LOW_TEMP_ALARM_SP_F, 0);
@@ -2135,10 +2100,7 @@ void languagePosition(void)
 		}else if(currentPosition.lineNumber == 1){
 			currentPosition.lineNumber = 6;
 		}
-//		else
-//		{
-//			currentPosition.lineNumber = 1;
-//		}
+
 	}
 	else if (releasedDown)
 	{
@@ -2150,10 +2112,7 @@ void languagePosition(void)
 		else if(currentPosition.lineNumber == 6){
 			currentPosition.lineNumber = 1;
 		}
-//		else
-//		{
-//			currentPosition.lineNumber = 7;
-//		}
+
 	}
 }
 
@@ -2198,7 +2157,7 @@ void passwordPosition(void)
 	else if (releasedUp)
 	{
 		releasedUp = false;
-//		currentPosition.lineNumber = 1;
+
 		if(currentPosition.lineNumber == 1){
 			currentPosition.lineNumber = 2;
 		}else{
@@ -2208,7 +2167,7 @@ void passwordPosition(void)
 	else if (releasedDown)
 	{
 		releasedDown = false;
-//		currentPosition.lineNumber = 2;
+
 		if(currentPosition.lineNumber == 2){
 			currentPosition.lineNumber = 1;
 		}else{
@@ -2303,7 +2262,7 @@ void groupControlModePosition(void)
 				currentPosition.lineNumber = INLET_LINENUM;
 				break;
 		}
-//		currentPosition.lineNumber = OUTLET_LINENUM;
+
 	}
 }
 
@@ -2421,13 +2380,13 @@ void standAloneModePosition(void)
 	else if(releasedUp)
 	{
 		releasedUp = false;
-		//Nothing show as there is no settings
+		//No settings
 
 	}
 	else if(releasedDown)
 	{
 		releasedDown = false;
-		//Nothing show
+		//No settings
 	}
 }
 
@@ -2930,12 +2889,22 @@ void masterSlaveModePosition(void)
 	else if(releasedUp)
 	{
 		releasedUp = false;
-		currentPosition.lineNumber = INLET_LINENUM;
+		if(currentPosition.lineNumber == INLET_LINENUM){
+			currentPosition.lineNumber = OUTLET_LINENUM;
+		}else{
+			currentPosition.lineNumber = INLET_LINENUM;
+		}
+
 	}
 	else if(releasedDown)
 	{
 		releasedDown = false;
-		currentPosition.lineNumber = OUTLET_LINENUM;
+		if(currentPosition.lineNumber == OUTLET_LINENUM){
+			currentPosition.lineNumber = INLET_LINENUM;
+		}else{
+			currentPosition.lineNumber = OUTLET_LINENUM;
+		}
+
 	}
 }
 
@@ -3328,7 +3297,7 @@ void evapOutTempSensorPosition(void)
 		else if (releasedUp)
 		{
 			releasedUp = false;
-//			currentPosition.lineNumber = 1;
+
 			if(currentPosition.lineNumber == 1){
 				currentPosition.lineNumber = 2;
 			}else{
@@ -3338,7 +3307,7 @@ void evapOutTempSensorPosition(void)
 		else if (releasedDown)
 		{
 			releasedDown = false;
-//			currentPosition.lineNumber = 2;
+
 			if(currentPosition.lineNumber == 2){
 				currentPosition.lineNumber = 1;
 			}else{
