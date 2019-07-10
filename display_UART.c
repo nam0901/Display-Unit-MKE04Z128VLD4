@@ -23,7 +23,6 @@ byte modbus_erw_coil_snd[ERW_COIL_LEN/8+1];			// extended read/write coils, modb
 
 uint16_union modbus_bootload_reg_rcv[1];			// Bootload read/write command, modbus 605
 uint16_union modbus_bootload_reg_snd[1];			// Bootload read/write command, modbus 605
-_Bool positiveDiff;
 
 
 

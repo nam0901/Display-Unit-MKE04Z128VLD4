@@ -189,8 +189,8 @@ void checkDisplayMemory(void)
 			case GROUP_CONTROL_MODE_POSITION:			groupControlModeDisplayMemory();		break;
 			case MODE_POSITION:							modeDisplayMemory();					break;
 			case STAND_ALONE_MODE_POSITION:				standAloneModeDisplayMemory();			break;
-			case LEAD_LAG_MODE_POSITION:				leadLagModeDisplayMemory();				break; //To-do
-			case MASTER_SLAVE_MODE_POSITION:			masterSlaveModeDisplayMemory();			break; //To-do
+			case LEAD_LAG_MODE_POSITION:				leadLagModeDisplayMemory();				break;
+			case MASTER_SLAVE_MODE_POSITION:			masterSlaveModeDisplayMemory();			break;
 			case UNIT_IDENTIFICATION_POSITION:			unitIdentificationDisplayMemory();		break;
 			case DIFFERENTIAL_2_POSITION:				differential2DisplayMemory();			break;
 			case CONTROL_STRATEGY_POSITION:				controlStrategyDisplayMemory();			break;
@@ -1417,12 +1417,17 @@ void doScrolling(const unsigned char textZero[], const unsigned char textOne[], 
 		{
 			scrollingDelay[3] = 0;
 			scrollingIndex[3]++;
-			//Can make it circular display
+			//Reset back to the first index
 			if(scrollingIndex[3] == col[3]-120)
 			{
 				scrollingIndex[3] = 0;
 
 			}
+
+//			for(unsigned int index = scrollingIndex[3]; index < 120; index++){
+//				s
+//			}
+
 		}
 		displayTextInOneLineScrolling(textZero, arial14, 0, 10, scrollingIndex[3], 1);
 		scrollingDelay[3]++;
@@ -2697,7 +2702,7 @@ void leadLagModeDisplayMemory(void)
 	}
 	else
 	{
-		displayChineseTextInOneLineHighlighted(leadLagControlModeChinese, 0, 5, 0, 0, MENU_ITEM_START_COLUMN);	//lead/lag mode      //10 for the last arguement
+		displayChineseTextInOneLineHighlighted(leadLagControlModeChinese, 0, 5, 0, 0, MENU_ITEM_START_COLUMN);	//lead/lag mode      //10 for the MENU_ITEM_START_COLUMN
 		displayChineseTextInOneLine(modeControlModeChinese, 10, 14, 0, 2, MENU_ITEM_START_COLUMN);	//unit identification
 		displayChineseTextInOneLine(leadLagControlModeChinese, 6, 8, 0, 4, MENU_ITEM_START_COLUMN);	//differential two
 		displayChineseTextInOneLine(leadLagControlModeChinese, 9, 12, 0, 6, MENU_ITEM_START_COLUMN);	//control strategy
@@ -2728,7 +2733,7 @@ void masterSlaveModeDisplayMemory(void)
 	}
 	else
 	{
-		displayChineseTextInOneLineHighlighted(masterSlaveControlModeChinese, 0, 3, 0, 0, MENU_ITEM_START_COLUMN);	//master/slave mode   //10 for the last arguement
+		displayChineseTextInOneLineHighlighted(masterSlaveControlModeChinese, 0, 3, 0, 0, MENU_ITEM_START_COLUMN);	//master/slave mode    //10 for the MENU_ITEM_START_COLUMN
 		displayChineseTextInOneLine(modeControlModeChinese, 10, 14, 0, 2, MENU_ITEM_START_COLUMN);	//unit identification
 		displayChineseTextInOneLine(masterSlaveControlModeChinese, 4, 7, 0, 4, MENU_ITEM_START_COLUMN);	//number of units
 	}

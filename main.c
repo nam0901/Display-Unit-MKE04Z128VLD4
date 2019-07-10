@@ -215,7 +215,6 @@ int main(void)
 	releasedDown = false;
 	heldUp = false;
 	heldDown = false;
-	positiveDiff = true; //By default it is Positive
 	standAloneMode = true; //Stand Alone mode by default
 
 	// "displayMemory.h"

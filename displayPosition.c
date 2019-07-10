@@ -443,6 +443,7 @@ void userInterfacePosition(void)
 				currentPosition.lineNumber = 10;
 			}
 		}
+
 		switch (currentPosition.lineNumber)
 		{
 			case 1:
@@ -455,6 +456,7 @@ void userInterfacePosition(void)
 				userInput = modbus_rw_reg_rcv[COOLING_DIF_1].ivalue;
 				break;
 
+			//Heater is present
 			case 3:
 				currentPosition.displayLevel = HEATING_SET_POINT_POSITION;
 				userInput = modbus_rw_reg_rcv[HEATING_SP].ivalue;
@@ -523,17 +525,28 @@ void userInterfacePosition(void)
 	else if (releasedUp)
 	{
 		releasedUp = false;
-		if (currentPosition.lineNumber > 1)
-		{
-			currentPosition.lineNumber -= 1;
+
+		if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+			{
+				if (currentPosition.lineNumber > 1 )
+				{
+					currentPosition.lineNumber -= 1;
+				}
+				else
+				{
+					currentPosition.lineNumber = 10;
+				}
+		}else{ //Not present
+			if (currentPosition.lineNumber > 1)
+			{
+				currentPosition.lineNumber -= 1;
+			}
+			else
+			{
+				currentPosition.lineNumber = 8;
+			}
 		}
-		else if(currentPosition.lineNumber == 1){
-			currentPosition.lineNumber = 8;
-		}
-//		else
-//		{
-//			currentPosition.lineNumber = 1;
-//		}
+
 	}
 	else if (releasedDown)
 	{
@@ -654,15 +667,13 @@ void systemInterfacePosition(void)
 	else if (releasedUp)
 	{
 		releasedUp = false;
-
-
-			if (currentPosition.lineNumber > 1)
-			{
-				currentPosition.lineNumber -= 1;
-			}
-			else{
-				currentPosition.lineNumber = 8;
-			}
+		if (currentPosition.lineNumber > 1)
+		{
+			currentPosition.lineNumber -= 1;
+		}
+		else{
+			currentPosition.lineNumber = 8;
+		}
 
 	}
 	else if (releasedDown)
@@ -691,7 +702,8 @@ void systemInterfacePosition(void)
 				refreshScreen = true;
 				parameterIsSet = false;
 				switch (currentPosition.lineNumber)
-				{case 1:
+				{
+				case 1:
 					currentPosition.displayLevel = GROUP_CONTROL_MODE_POSITION;
 					currentPosition.lineNumber = INLET_LINENUM;
 					break;
@@ -762,38 +774,38 @@ void systemInterfacePosition(void)
 				default:
 					break;
 				}
-			}else if (releasedUp)
-				{
-					releasedUp = false;
+		}else if (releasedUp)
+			{
+				releasedUp = false;
 
 
-						if (currentPosition.lineNumber > 1)
-						{
-							currentPosition.lineNumber -= 1;
-						}else if(currentPosition.lineNumber == 9){
-
-							currentPosition.lineNumber -= 2;
-						}
-						else{
-							currentPosition.lineNumber = 9;
-						}
-
-				}
-				else if (releasedDown)
-				{
-					releasedDown = false;
-					if (currentPosition.lineNumber < 9)
+					if (currentPosition.lineNumber > 1)
 					{
-						currentPosition.lineNumber += 1;
-					}else if(currentPosition.lineNumber == 7){
-						currentPosition.lineNumber += 2;
+						currentPosition.lineNumber -= 1;
+					}else if(currentPosition.lineNumber == 9){
+
+						currentPosition.lineNumber -= 2;
 					}
-					else
-					{
-						currentPosition.lineNumber = 1;
+					else{
+						currentPosition.lineNumber = 9;
 					}
 
+			}
+			else if (releasedDown)
+			{
+				releasedDown = false;
+				if (currentPosition.lineNumber < 9)
+				{
+					currentPosition.lineNumber += 1;
+				}else if(currentPosition.lineNumber == 7){
+					currentPosition.lineNumber += 2;
 				}
+				else
+				{
+					currentPosition.lineNumber = 1;
+				}
+
+			}
 	}
 }
 
@@ -996,12 +1008,12 @@ void coolingSetPointPosition(void)
 					}
 					else
 					{
-						if(positiveDiff){ //Positive Differential
-							userInput = modbus_ero_reg_rcv[COOL_ON_MAX].ivalue - modbus_rw_reg_rcv[COOLING_DIF_1].ivalue;
-						}else{
-							userInput = coolingMax;
-						}
 
+						if (modbus_rw_coil_rcv[COOL_HYSTERESIS/8] & COOL_HYSTERESIS_F){ //Negative +/-
+							userInput = coolingMax;
+						}else{
+							userInput = modbus_ero_reg_rcv[COOL_ON_MAX].ivalue - modbus_rw_reg_rcv[COOLING_DIF_1].ivalue;
+						}
 //						userInput = coolingMax;
 					}
 			}
@@ -1032,7 +1044,7 @@ void coolingSetPointPosition(void)
 					}
 					else
 					{
-						if(positiveDiff){ //Negative Differential
+						if (modbus_rw_coil_rcv[COOL_HYSTERESIS/8] & COOL_HYSTERESIS_F){
 							userInput = coolingMin;
 						}else{
 							userInput = modbus_ero_reg_rcv[COOL_OFF_MIN].ivalue + modbus_rw_reg_rcv[COOLING_DIF_1].ivalue;
@@ -1069,10 +1081,10 @@ void coolingSetPointPosition(void)
 						}
 						else
 						{
-							if(positiveDiff){ //Positive Differential
-								userInput = modbus_ero_reg_rcv[COOL_ON_MAX].ivalue - modbus_rw_reg_rcv[COOLING_DIF_1].ivalue;
-							}else{
+							if (modbus_rw_coil_rcv[COOL_HYSTERESIS/8] & COOL_HYSTERESIS_F){ //Negative +/-
 								userInput = coolingMax;
+							}else{
+								userInput = modbus_ero_reg_rcv[COOL_ON_MAX].ivalue - modbus_rw_reg_rcv[COOLING_DIF_1].ivalue;
 							}
 
 //							userInput = coolingMax;
@@ -1117,11 +1129,12 @@ void coolingSetPointPosition(void)
 						else
 						{
 //							userInput = coolingMin;
-							if(positiveDiff){ //Negative Differential
+							if (modbus_rw_coil_rcv[COOL_HYSTERESIS/8] & COOL_HYSTERESIS_F){
 								userInput = coolingMin;
 							}else{
 								userInput = modbus_ero_reg_rcv[COOL_OFF_MIN].ivalue + modbus_rw_reg_rcv[COOLING_DIF_1].ivalue;
 							}
+
 						}
 						updateScreenTimerDone = false;
 					}
@@ -1451,8 +1464,8 @@ void heatingSetPointPosition(void)
 
 void heatingDifferentialPosition(void)
 {
-	int heatingDiffMax = modbus_rw_reg_rcv[HEATING_DIF_MAX].ivalue;
-	int heatingDiffMin = modbus_rw_reg_rcv[HEATING_DIF_MIN].ivalue;
+//	int heatingDiffMax = modbus_rw_reg_rcv[HEATING_DIF_MAX].ivalue;
+//	int heatingDiffMin = modbus_rw_reg_rcv[HEATING_DIF_MIN].ivalue;
 	if (releasedBack)
 	{
 		releasedBack = false;
@@ -1475,121 +1488,121 @@ void heatingDifferentialPosition(void)
 	else if (releasedUp)
 	{
 		releasedUp = false;
-		if (userInput < heatingDiffMax)
-		{
-			if (userInput < 1000 && userInput >= -1000)
-			{
-				userInput += 1;
-			}
-			else
-			{
-				userInput += 10;
-			}
-			if (userInput > heatingDiffMax)
-			{
-				userInput = heatingDiffMax;
-			}
-		}
-		else
-		{
-			userInput = heatingDiffMax;
-		}
+//		if (userInput < heatingDiffMax)
+//		{
+//			if (userInput < 1000 && userInput >= -1000)
+//			{
+//				userInput += 1;
+//			}
+//			else
+//			{
+//				userInput += 10;
+//			}
+//			if (userInput > heatingDiffMax)
+//			{
+//				userInput = heatingDiffMax;
+//			}
+//		}
+//		else
+//		{
+//			userInput = heatingDiffMax;
+//		}
 	}
 	else if (releasedDown)
 	{
 		releasedDown = false;
-		if (userInput > heatingDiffMin)
-		{
-			if (userInput <= 1000 && userInput > -1000)
-			{
-				userInput -= 1;
-			}
-			else
-			{
-				userInput -= 10;
-			}
-
-			if (userInput < heatingDiffMin)
-			{
-				userInput = heatingDiffMin;
-			}
-		}
-		else
-		{
-			userInput = heatingDiffMin;
-		}
+//		if (userInput > heatingDiffMin)
+//		{
+//			if (userInput <= 1000 && userInput > -1000)
+//			{
+//				userInput -= 1;
+//			}
+//			else
+//			{
+//				userInput -= 10;
+//			}
+//
+//			if (userInput < heatingDiffMin)
+//			{
+//				userInput = heatingDiffMin;
+//			}
+//		}
+//		else
+//		{
+//			userInput = heatingDiffMin;
+//		}
 	}
 	else if (heldUp)
 	{
-		if (updateScreenTimerDone)
-		{
-			if (userInput < heatingDiffMax)
-			{
-				if (userInput < 1000 && userInput >= -1000)
-				{
-					userInput += 1;
-				}
-				else
-				{
-					userInput += 10;
-				}
-
-				if (userInput > heatingDiffMax)
-				{
-					userInput = heatingDiffMax;
-				}
-			}
-			else
-			{
-				userInput = heatingDiffMax;
-			}
-			updateScreenTimerDone = false;
-		}
-
-		else
-		{
-			if (!TI1_updateScreenTimerIsOn)
-			{
-				updateScreenRate = BUTTON_HELD_REFRESH_TIME;
-				TI1_updateScreenTimerIsOn = true;
-			}
-		}
+//		if (updateScreenTimerDone)
+//		{
+//			if (userInput < heatingDiffMax)
+//			{
+//				if (userInput < 1000 && userInput >= -1000)
+//				{
+//					userInput += 1;
+//				}
+//				else
+//				{
+//					userInput += 10;
+//				}
+//
+//				if (userInput > heatingDiffMax)
+//				{
+//					userInput = heatingDiffMax;
+//				}
+//			}
+//			else
+//			{
+//				userInput = heatingDiffMax;
+//			}
+//			updateScreenTimerDone = false;
+//		}
+//
+//		else
+//		{
+//			if (!TI1_updateScreenTimerIsOn)
+//			{
+//				updateScreenRate = BUTTON_HELD_REFRESH_TIME;
+//				TI1_updateScreenTimerIsOn = true;
+//			}
+//		}
 	}
 
 	else if (heldDown)
 	{
-		if (updateScreenTimerDone)
-		{
-			if (userInput > heatingDiffMin)
-			{
-				if (userInput <= 1000 && userInput > -1000)
-				{
-					userInput -= 1;
-				}
-				else
-				{
-					userInput -= 10;
-				}
-
-				if (userInput < heatingDiffMin)
-				{
-					userInput = heatingDiffMin;
-				}
-			}
-			else
-			{
-				userInput = heatingDiffMin;
-			}
-			updateScreenTimerDone = false;
-		}
-		else
-		{
-			if (!TI1_updateScreenTimerIsOn)
-			{
-				updateScreenRate = BUTTON_HELD_REFRESH_TIME;
-				TI1_updateScreenTimerIsOn = true;
-			}
-		}
+//		if (updateScreenTimerDone)
+//		{
+//			if (userInput > heatingDiffMin)
+//			{
+//				if (userInput <= 1000 && userInput > -1000)
+//				{
+//					userInput -= 1;
+//				}
+//				else
+//				{
+//					userInput -= 10;
+//				}
+//
+//				if (userInput < heatingDiffMin)
+//				{
+//					userInput = heatingDiffMin;
+//				}
+//			}
+//			else
+//			{
+//				userInput = heatingDiffMin;
+//			}
+//			updateScreenTimerDone = false;
+//		}
+//		else
+//		{
+//			if (!TI1_updateScreenTimerIsOn)
+//			{
+//				updateScreenRate = BUTTON_HELD_REFRESH_TIME;
+//				TI1_updateScreenTimerIsOn = true;
+//			}
+//		}
 	}
 }
 void highTempAlarmPosition(void)
@@ -1987,11 +2000,9 @@ void hysteresisPosition(void)
 			switch (currentPosition.lineNumber)
 			{
 				case 1: // positive
-					positiveDiff = true;
 					uart_write_return = display_uart_update(COIL, RW_COIL_START + COOL_HYSTERESIS, false, 0, 0, COOL_HYSTERESIS_F);
 					break;
 				case 2: // negative
-					positiveDiff = false;
 					uart_write_return = display_uart_update(COIL, RW_COIL_START + COOL_HYSTERESIS, true, 0, 0, COOL_HYSTERESIS_F);
 					break;
 				default: break;
@@ -2214,7 +2225,7 @@ void groupControlModePosition(void)
 		case 2: //Mode settings
 			switch(modbus_rw_reg_rcv[GROUP_CONTROL_MODE].ivalue)
 			{
-			case 1:		//stand-alone mode
+			case 1: //stand-alone mode
 				currentPosition.displayLevel = STAND_ALONE_MODE_POSITION;
 				currentPosition.lineNumber = INLET_LINENUM;
 				break;
