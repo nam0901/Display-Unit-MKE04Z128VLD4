@@ -134,8 +134,8 @@ void checkDisplayPosition(void)
 			case GROUP_CONTROL_MODE_POSITION:		groupControlModePosition();		break;
 			case MODE_POSITION:						modePosition();					break;
 			case STAND_ALONE_MODE_POSITION:			standAloneModePosition();		break;
-			case LEAD_LAG_MODE_POSITION:			leadLagModePosition();			break; //TO-DO
-			case MASTER_SLAVE_MODE_POSITION:		masterSlaveModePosition();		break; //TO-DO
+			case LEAD_LAG_MODE_POSITION:			leadLagModePosition();			break;
+			case MASTER_SLAVE_MODE_POSITION:		masterSlaveModePosition();		break;
 			case UNIT_IDENTIFICATION_POSITION:		unitIdentificationPosition();	break;
 			case DIFFERENTIAL_2_POSITION:			differential2Position();		break;
 			case NUMBER_OF_UNITS_POSITION:			numberOfUnitsPosition();		break;
@@ -434,15 +434,15 @@ void userInterfacePosition(void)
 		releasedOK = false;
 		refreshScreen = true;
 		parameterIsSet = false;
-		if(!(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) && (currentPosition.lineNumber >= 3))//heater not present
-		{
-			notHeaterDisplay = true;
-			currentPosition.lineNumber += 2; //add two to skip heating set point and heating differential.
-			if(currentPosition.lineNumber > 10)
-			{
-				currentPosition.lineNumber = 10;
-			}
-		}
+//		if(!(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) && (currentPosition.lineNumber >= 3))//heater not present
+//		{
+//			notHeaterDisplay = true;
+//			currentPosition.lineNumber += 2; //add two to skip heating set point and heating differential.
+//			if(currentPosition.lineNumber > 10)
+//			{
+//				currentPosition.lineNumber = 10;
+//			}
+//		}
 
 		switch (currentPosition.lineNumber)
 		{
@@ -525,9 +525,9 @@ void userInterfacePosition(void)
 	else if (releasedUp)
 	{
 		releasedUp = false;
-
-		if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-			{
+//
+//		if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+//			{
 				if (currentPosition.lineNumber > 1 )
 				{
 					currentPosition.lineNumber -= 1;
@@ -536,23 +536,23 @@ void userInterfacePosition(void)
 				{
 					currentPosition.lineNumber = 10;
 				}
-		}else{ //Not present
-			if (currentPosition.lineNumber > 1)
-			{
-				currentPosition.lineNumber -= 1;
-			}
-			else
-			{
-				currentPosition.lineNumber = 8;
-			}
-		}
+//		}else{ //Not present
+//			if (currentPosition.lineNumber > 1)
+//			{
+//				currentPosition.lineNumber -= 1;
+//			}
+//			else
+//			{
+//				currentPosition.lineNumber = 8;
+//			}
+//		}
 
 	}
 	else if (releasedDown)
 	{
 		releasedDown = false;
-		if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-		{
+//		if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+//		{
 			if (currentPosition.lineNumber < 10)
 			{
 				currentPosition.lineNumber += 1;
@@ -561,18 +561,18 @@ void userInterfacePosition(void)
 			{
 				currentPosition.lineNumber = 1; //from 10
 			}
-		}
-		else //heater not present
-		{
-			if (currentPosition.lineNumber < 8)
-			{
-				currentPosition.lineNumber += 1;
-			}
-			else
-			{
-				currentPosition.lineNumber = 1; //from 8
-			}
-		}
+//		}
+//		else //heater not present
+//		{
+//			if (currentPosition.lineNumber < 8)
+//			{
+//				currentPosition.lineNumber += 1;
+//			}
+//			else
+//			{
+//				currentPosition.lineNumber = 1; //from 8
+//			}
+//		}
 	}
 }
 
@@ -1464,8 +1464,10 @@ void heatingSetPointPosition(void)
 
 void heatingDifferentialPosition(void)
 {
+
 //	int heatingDiffMax = modbus_rw_reg_rcv[HEATING_DIF_MAX].ivalue;
 //	int heatingDiffMin = modbus_rw_reg_rcv[HEATING_DIF_MIN].ivalue;
+
 	if (releasedBack)
 	{
 		releasedBack = false;
@@ -1475,15 +1477,16 @@ void heatingDifferentialPosition(void)
 	else if (releasedOK)
 	{
 		releasedOK = false;
+		currentPosition.displayLevel = USER_INTERFACE_POSITION;
+		currentPosition.lineNumber   = 4;
+//		uint16 uart_write_return;
+//
+//		uart_write_return = display_uart_update(REGISTER, RW_REG_START + HEATING_DIF, false, userInput, HEATING_DIF_F, 0);
 
-		uint16 uart_write_return;
-
-		uart_write_return = display_uart_update(REGISTER, RW_REG_START + HEATING_DIF, false, userInput, HEATING_DIF_F, 0);
-
-		// Validation Screen
-		parameterIsSet = true;
-		// A delay for UART to write the value to the ECU
-		TI1_UARTWriteTimer_Flag = true;
+//		 Validation Screen
+//		parameterIsSet = true;
+//		 A delay for UART to write the value to the ECU
+//		TI1_UARTWriteTimer_Flag = true;
 	}
 	else if (releasedUp)
 	{
@@ -1510,7 +1513,7 @@ void heatingDifferentialPosition(void)
 	}
 	else if (releasedDown)
 	{
-		releasedDown = false;
+//		releasedDown = false;
 //		if (userInput > heatingDiffMin)
 //		{
 //			if (userInput <= 1000 && userInput > -1000)
@@ -1611,10 +1614,10 @@ void highTempAlarmPosition(void)
 	int highTempMin = modbus_rw_reg_rcv[HIGH_TEMP_SP_MIN].ivalue;
 
 	char lineNumTemp = 3; //heater not present
-	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) //heater present
-	{
+//	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) //heater present
+//	{
 		lineNumTemp = 5;
-	}
+//	}
 	if (releasedBack)
 	{
 		//heater not present
@@ -1759,10 +1762,10 @@ void lowTempAlarmPosition(void)
 	int lowTempMin = modbus_rw_reg_rcv[LOW_TEMP_SP_MIN].ivalue;
 	char lineNumTemp = 4; // heater not present
 
-	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-	{
+//	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+//	{
 		lineNumTemp = 6;
-	}
+//	}
 	if (releasedBack)
 	{
 		//heater not presents
@@ -1904,13 +1907,13 @@ void lowTempAlarmPosition(void)
 
 void tempScalePosition(void)
 {
-	int lineNumTemp = 5; //heater not present
-
-
-	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-	{
-		lineNumTemp = 7;
-	}
+//	int lineNumTemp = 5; //heater not present
+//
+//
+//	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+//	{
+	int	lineNumTemp = 7;
+//	}
 	if (releasedBack)
 	{
 		//heater not presents
@@ -1976,11 +1979,11 @@ void hysteresisPosition(void)
 {
 	char lineNumTemp = 6; //heater not present
 
-	//heater present
-	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)
-	{
+//	//heater present
+//	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)
+//	{
 		lineNumTemp = 8;
-	}
+//	}
 
 	if (releasedBack)
 	{
@@ -2048,10 +2051,10 @@ void languagePosition(void)
 {
 	char lineNumTemp = 7; //no heater present
 	//heater present
-	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)
-	{
+//	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)
+//	{
 		lineNumTemp = 9;
-	}
+//	}
 	if (releasedBack)
 	{
 		//heater not presents
@@ -2085,6 +2088,7 @@ void languagePosition(void)
 		case SPANISH:
 			currentTextTable = spanishText;
 			break;
+
 		case ITALIAN:
 			currentTextTable = italianText;
 			break;
@@ -2131,10 +2135,10 @@ void passwordPosition(void)
 {
 	char lineNumTemp = 8; // heater not present
 	//heater present
-	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)
-	{
+//	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)
+//	{
 		lineNumTemp = 10;
-	}
+//	}
 	if (releasedBack)
 	{
 		//heater not presents
@@ -2386,7 +2390,8 @@ void standAloneModePosition(void)
 	else if(releasedOK)
 	{
 		releasedOK = false;
-
+		currentPosition.displayLevel = GROUP_CONTROL_MODE_POSITION;
+		currentPosition.lineNumber = OUTLET_LINENUM;
 	}
 	else if(releasedUp)
 	{

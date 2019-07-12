@@ -79,7 +79,7 @@
 
 // Firmware & Hardware Versions
 #define DU_FIRMWARE_VERSION_MAJOR	'1'
-#define DU_FIRMWARE_VERSION_MINOR	'6'
+#define DU_FIRMWARE_VERSION_MINOR	'7'
 #define DU_HARDWARE_VERSION_MAJOR	'5'
 #define DU_HARDWARE_VERSION_MINOR	'0'
 
@@ -365,7 +365,6 @@ int main(void)
 		}
 		else
 		{
-
 			/* Read User Input */
 			scanButton();
 

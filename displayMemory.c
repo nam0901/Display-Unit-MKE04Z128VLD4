@@ -948,11 +948,11 @@ void displayChineseAlarm(int alarmIndex)
 			drawIcon(attentionIcon, 16, 2, 3, 5);
 			break;
 
-		/*case DEGRADED_MODE:
+		case DEGRADED_MODE:
 			displayChineseTextInOneLine(degradedModeChinese, 0, 6, 0, 2, 22);
 			displayChineseTextInOneLine(degradedModeChinese, 7, 13, 0, 4, 22);
 			drawIcon(attentionIcon, 16, 2, 2, 5);
-			break;*/
+			break;
 
 		default: break;
 	}
@@ -1674,8 +1674,8 @@ void displayChineseUserInterface(int lineNumber)
 	clearOneLine(6);
 	// Title:
 	displayChineseTextInOneLineHighlighted(userInterfaceChinese, 0, 3, 0, 0, 10);
-	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) //heater present
-	{
+//	if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) //heater present
+//	{
 		switch (lineNumber)
 		{
 			case 1: case 2: case 3:
@@ -1712,37 +1712,37 @@ void displayChineseUserInterface(int lineNumber)
 
 			default: break;
 		}
-	}
-	else //heater not present
-	{
-		switch (lineNumber)
-		{
-			case 1: case 2: case 3:
-			// Line 1: Cooling Set Point
-			displayChineseTextInOneLine(userInterfaceChinese, 4, 8, 0, 2, MENU_ITEM_START_COLUMN);
-			// Line 2: Cooling Differential
-			displayChineseTextInOneLine(userInterfaceChinese, 9, 12, 0, 4, MENU_ITEM_START_COLUMN);
-			// Line 3: High Temp Alarm
-			displayChineseTextInOneLine(userInterfaceChinese, 22, 25, 0, 6, MENU_ITEM_START_COLUMN);
-			break;
-
-			case 4: case 5: case 6:
-			// Line 4: Low Temp Alarm
-			displayChineseTextInOneLine(userInterfaceChinese, 26, 29, 0, 2, MENU_ITEM_START_COLUMN);
-			// Line 5: Temp Scale
-			displayChineseTextInOneLine(userInterfaceChinese, 30, 33, 0, 4, MENU_ITEM_START_COLUMN);
-			// Line 6: Hysteresis
-			displayChineseTextInOneLine(userInterfaceChinese, 34, 35, 0, 6, MENU_ITEM_START_COLUMN);
-			break;
-
-			case 7: case 8:
-			// Line 7: Language
-			displayChineseTextInOneLine(userInterfaceChinese, 36, 39, 0, 2, MENU_ITEM_START_COLUMN);
-			// Line 8: Password
-			displayChineseTextInOneLine(userInterfaceChinese, 40, 41, 0, 4, MENU_ITEM_START_COLUMN);
-			break;
-		}
-	}
+//	}
+//	else //heater not present
+//	{
+//		switch (lineNumber)
+//		{
+//			case 1: case 2: case 3:
+//			// Line 1: Cooling Set Point
+//			displayChineseTextInOneLine(userInterfaceChinese, 4, 8, 0, 2, MENU_ITEM_START_COLUMN);
+//			// Line 2: Cooling Differential
+//			displayChineseTextInOneLine(userInterfaceChinese, 9, 12, 0, 4, MENU_ITEM_START_COLUMN);
+//			// Line 3: High Temp Alarm
+//			displayChineseTextInOneLine(userInterfaceChinese, 22, 25, 0, 6, MENU_ITEM_START_COLUMN);
+//			break;
+//
+//			case 4: case 5: case 6:
+//			// Line 4: Low Temp Alarm
+//			displayChineseTextInOneLine(userInterfaceChinese, 26, 29, 0, 2, MENU_ITEM_START_COLUMN);
+//			// Line 5: Temp Scale
+//			displayChineseTextInOneLine(userInterfaceChinese, 30, 33, 0, 4, MENU_ITEM_START_COLUMN);
+//			// Line 6: Hysteresis
+//			displayChineseTextInOneLine(userInterfaceChinese, 34, 35, 0, 6, MENU_ITEM_START_COLUMN);
+//			break;
+//
+//			case 7: case 8:
+//			// Line 7: Language
+//			displayChineseTextInOneLine(userInterfaceChinese, 36, 39, 0, 2, MENU_ITEM_START_COLUMN);
+//			// Line 8: Password
+//			displayChineseTextInOneLine(userInterfaceChinese, 40, 41, 0, 4, MENU_ITEM_START_COLUMN);
+//			break;
+//		}
+//	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1761,42 +1761,42 @@ void userInterfaceDisplayMemory(void)
 	clearOneLine(6);
 	if(currentLanguage != CHINESE)
 	{
-		if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) //heater present
-		{
+//		if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) //heater present
+//		{
 			switch (currentPosition.lineNumber)
 			{
 				case 1: case 2: case 3:
 					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_CoolingSetPoint], currentTextTable[TEXT_INDEX_CoolingDifferential], currentTextTable[TEXT_INDEX_HeatingSetPoint]); break;
 				case 4: case 5: case 6:
 					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_HeatingDifferential], currentTextTable[TEXT_INDEX_HighTempAlarm], currentTextTable[TEXT_INDEX_LowTempAlarm]); break;
-				case 7: case 9:
+				case 7: case 8: case 9:
 					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_TemperatureScale], currentTextTable[TEXT_INDEX_Hysteresis], currentTextTable[TEXT_INDEX_Language]); break;
 				case 10:
 					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_Passcode], "\0", "\0"); break;
 				default: break;
 			}
-		}
-		else //heater not present, don't display heating setpoint and heating differential in user interface
-		{
-			if( notHeaterDisplay && (currentPosition.lineNumber >= 5 && currentPosition.lineNumber <= 10))
-			{
-				currentPosition.lineNumber -= 2; //have to do this unskip the case 3 when pressed OK button after adjustment in each menu in user interface
-				notHeaterDisplay = false;
-			}
-			switch (currentPosition.lineNumber)
-			{
-				case 1: case 2: case 3:
-					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_CoolingSetPoint], currentTextTable[TEXT_INDEX_CoolingDifferential], currentTextTable[TEXT_INDEX_HighTempAlarm]); break;
-				case 4: case 5: case 6:
-					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_LowTempAlarm], currentTextTable[TEXT_INDEX_TemperatureScale], currentTextTable[TEXT_INDEX_Hysteresis]); break;
-				case 7: case 8:
-					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_Language], currentTextTable[TEXT_INDEX_Passcode], "\0"); break;
-				default: break;
-			}
-		}
+//		}
+//		else //heater not present, don't display heating setpoint and heating differential in user interface
+//		{
+//			if( notHeaterDisplay && (currentPosition.lineNumber >= 5 && currentPosition.lineNumber <= 10))
+//			{
+//				currentPosition.lineNumber -= 2; //have to do this unskip the case 3 when pressed OK button after adjustment in each menu in user interface
+//				notHeaterDisplay = false;
+//			}
+//			switch (currentPosition.lineNumber)
+//			{
+//				case 1: case 2: case 3:
+//					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_CoolingSetPoint], currentTextTable[TEXT_INDEX_CoolingDifferential], currentTextTable[TEXT_INDEX_HighTempAlarm]); break;
+//				case 4: case 5: case 6:
+//					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_LowTempAlarm], currentTextTable[TEXT_INDEX_TemperatureScale], currentTextTable[TEXT_INDEX_Hysteresis]); break;
+//				case 7: case 8:
+//					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_Language], currentTextTable[TEXT_INDEX_Passcode], "\0"); break;
+//				default: break;
+//			}
+//		}
 	}
 	else
-	{
+	{ //CHINESE
 		if( notHeaterDisplay && (currentPosition.lineNumber >= 5 && currentPosition.lineNumber <= 10))
 		{
 			currentPosition.lineNumber -= 2; //have to do this unskip the case 3 when pressed OK button after adjustment in each menu in user interface
@@ -1969,10 +1969,10 @@ void heatingSetPointDisplayMemory(void)
 		if (currentLanguage != CHINESE)
 		{
 			char lineNumTemp = 3; // heater not present
-			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-			{
+//			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+//			{
 				lineNumTemp = 5;
-			}
+//			}
 			doScrolling(currentTextTable[TEXT_INDEX_HeatingSetPoint], "\0", "\0", "\0");
 		}
 		else
@@ -2026,10 +2026,10 @@ void heatingDifferentialDisplayMemory(void)
 			if (currentLanguage != CHINESE)
 			{
 				char lineNumTemp = 4; // heater not present
-				if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-				{
+//				if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+//				{
 					lineNumTemp = 6;
-				}
+//				}
 				doScrolling(currentTextTable[TEXT_INDEX_HeatingDifferential], "\0", "\0", "\0");
 			}
 			else
@@ -2083,10 +2083,10 @@ void highTempAlarmDisplayMemory(void)
 		if (currentLanguage != CHINESE)
 		{
 			char lineNumTemp = 3; // heater not present
-			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-			{
+//			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+//			{
 				lineNumTemp = 5;
-			}
+//			}
 			doScrolling(currentTextTable[TEXT_INDEX_HighTempAlarm], "\0", "\0", "\0");
 		}
 		else
@@ -2140,10 +2140,10 @@ void lowTempAlarmDisplayMemory(void)
 		if(currentLanguage != CHINESE)
 		{
 			char lineNumTemp = 4; // heater not present
-			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-			{
+//			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+//			{
 				lineNumTemp = 6;
-			}
+//			}
 			doScrolling(currentTextTable[TEXT_INDEX_LowTempAlarm], "\0", "\0", "\0");
 		}
 		else
@@ -2219,10 +2219,10 @@ void tempScaleDisplayMemory(void)
 		if (currentLanguage != CHINESE)
 		{
 			char lineNumTemp = 5; // heater not present
-			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-			{
+//			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+//			{
 				lineNumTemp = 7;
-			}
+//			}
 			doScrolling(currentTextTable[TEXT_INDEX_TemperatureScale], currentTextTable[TEXT_INDEX_Fahrenheit], currentTextTable[TEXT_INDEX_Celsius], "\0");
 		}
 		else
@@ -2301,10 +2301,10 @@ void hysteresisDisplayMemory(void)
 		if (currentLanguage != CHINESE)
 		{
 			char lineNumTemp = 6; // heater not present
-			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-			{
+//			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+//			{
 				lineNumTemp = 8;
-			}
+//			}
 			doScrolling(currentTextTable[TEXT_INDEX_Hysteresis], currentTextTable[TEXT_INDEX_Positive], currentTextTable[TEXT_INDEX_Negative], "\0");
 		}
 		else
@@ -2356,10 +2356,10 @@ void languageDisplayMemory(void)
 		if (currentLanguage != CHINESE)
 		{
 			char lineNumTemp = 7; // heater not present
-			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-			{
+//			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
+//			{
 				lineNumTemp = 9;
-			}
+//			}
 			displayTextInOneLineHighlighted(currentTextTable[TEXT_INDEX_Language], arial14, 0, MENU_ITEM_START_COLUMN);
 		}
 		else
