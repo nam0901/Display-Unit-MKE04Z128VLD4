@@ -10,11 +10,11 @@
 #include "OLED.h"
 
 
-#define CHINESE_CHAR_WIDTH				14 //14
+#define CHINESE_CHAR_WIDTH				14
 #define MAX_NUM_OF_WORDS_IN_TEXT		20
  _Bool scrollingHighlight;
 
-//char static j = 0;
+
 /* Function Prototypes */
 static int charStartIndex(unsigned char ch, const unsigned char fontTable[]);
 
@@ -100,31 +100,12 @@ void drawAndHighlightCharacter(unsigned char ch, const unsigned char fontTable[]
 		for (int i = col; i < maxCol; i++)
 		{
 
-			/*I2CDataBuffer[page][0] = 0xff;
-			I2CDataBuffer[page][1] = 0xff;
-			I2CDataBuffer[page][2] = 0xff;
-			I2CDataBuffer[page][3] = 0xff;
-			I2CDataBuffer[page][4] = 0xff;
-			I2CDataBuffer[page][5] = 0xff;
-			I2CDataBuffer[page][6] = 0xff;
-			I2CDataBuffer[page][7] = 0xff;
-			I2CDataBuffer[page][8] = 0xff;
-			I2CDataBuffer[page][9] = 0xff;*/
 			I2CDataBuffer[page][i] = ~fontTable[startIndex++];
 		}
 		// lower page:
 		for (int i = col; i < maxCol; i++)
 		{
-			/*I2CDataBuffer[page+1][0] = 0xff;
-			I2CDataBuffer[page+1][1] = 0xff;
-			I2CDataBuffer[page+1][2] = 0xff;
-			I2CDataBuffer[page+1][3] = 0xff;
-			I2CDataBuffer[page+1][4] = 0xff;
-			I2CDataBuffer[page+1][5] = 0xff;
-			I2CDataBuffer[page+1][6] = 0xff;
-			I2CDataBuffer[page+1][7] = 0xff;
-			I2CDataBuffer[page+1][8] = 0xff;
-			I2CDataBuffer[page+1][9] = 0xff;*/
+
 			I2CDataBuffer[page+1][i] = ~fontTable[startIndex++];
 		}
 
@@ -532,12 +513,7 @@ void drawIntegerRightAligned(const char font[], int number, unsigned char height
 			}
 			else //0.0 to 9.9
 			{
-				/*int startCol = column-widthInRows*3+3;
-				if (startCol < COLUMN_NUM_MIN)
-				{
-					startCol = COLUMN_NUM_MIN;
-				}
-				clearArea(page, startCol, page+heightInPages, endCol);*/
+
 				drawDigit(font, ones, heightInPages, widthInRows, page, column-widthInRows-5);
 			}
 		}

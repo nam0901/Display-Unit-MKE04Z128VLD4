@@ -143,8 +143,6 @@ extern _Bool isInDegradedMode;
 
 _Bool justClickOK; //use in About menut item
 
-//extern int coolingSPBeforeEnterDegradedModeInDegreeF;
-//extern int coolingSPBeforeEnterDegradedModeInDegreeC;
 
 void checkDisplayPosition(void);
 

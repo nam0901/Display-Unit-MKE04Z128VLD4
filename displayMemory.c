@@ -54,7 +54,6 @@ static void enterPasswordDisplayMemory(void);																										   						
 //void displayDigitForConfirmationMessageOtherLanguage(int page, int col, int digit);       																										//
 void doScrolling(const unsigned char textZero[], const unsigned char textOne[], const unsigned char textTwo[], const unsigned char textThree[]);												//
 void cat(const unsigned char first[], const unsigned char second[], int type, int value);
-void catChinese(const char fontTable1[], int start1, int numOfChar1, const char fontTable2[], int start2, int numOfChar2, int type, int value);
 static _Bool isEmpty(int size);
 /************************************************************************************************************************************************************************************************/
 
@@ -137,7 +136,6 @@ void checkDisplayMemory(void)
 			case GERMAN:	currentTextTable = germanText;	break;
 			case SPANISH:	currentTextTable = spanishText;	break;
 			case ITALIAN:	currentTextTable = italianText; break;
-			case POLISH: 	currentTextTable = polishText; break;
 			//add chinese language
 			default: break;
 		}
@@ -420,26 +418,26 @@ void showWorkingStatus1(void)
 	//	2 - Imbalance Voltage
 
 	//	3 - Over Voltage
-	if (workingStatus1 & 0x0008)
-	{
-		alarmOutput[OVER_VOLTAGE] = 0;
-		//drawIcon(alarmIcon, 14, 2, BELL_ICON_PAGE, BELL_ICON_COLUMN); //comment out since don't concern about this feature at the current unit
-	}
-	else
-	{
-		alarmOutput[OVER_VOLTAGE] = 0;
-	}
-
-	//	4 - Under Voltage
-	if (workingStatus1 & 0x0010)
-	{
-		alarmOutput[UNDER_VOLTAGE] = 0;
-		//drawIcon(alarmIcon, 14, 2, BELL_ICON_PAGE, BELL_ICON_COLUMN); //comment out since don't concern about this feature at the current unit
-	}
-	else
-	{
-		alarmOutput[UNDER_VOLTAGE] = 0;
-	}
+//	if (workingStatus1 & 0x0008)
+//	{
+//		alarmOutput[OVER_VOLTAGE] = 0;
+//		//drawIcon(alarmIcon, 14, 2, BELL_ICON_PAGE, BELL_ICON_COLUMN); //comment out since don't concern about this feature at the current unit
+//	}
+//	else
+//	{
+//		alarmOutput[OVER_VOLTAGE] = 0;
+//	}
+//
+//	//	4 - Under Voltage
+//	if (workingStatus1 & 0x0010)
+//	{
+//		alarmOutput[UNDER_VOLTAGE] = 0;
+//		//drawIcon(alarmIcon, 14, 2, BELL_ICON_PAGE, BELL_ICON_COLUMN); //comment out since don't concern about this feature at the current unit
+//	}
+//	else
+//	{
+//		alarmOutput[UNDER_VOLTAGE] = 0;
+//	}
 
 	//	5 - Door/Smoke Alarm
 	if ((workingStatus1 & 0x0020) ||  (ID2WorkStatus & 0x0020))
@@ -567,15 +565,15 @@ void showWorkingStatus2(void)
 {
 	int workingStatus2 = modbus_ro_reg_rcv[WORKING_STATUS_2].ivalue;
 
-	//	0 - Frost Alarm
-	if (workingStatus2 & 0x0001)
-	{
-		alarmOutput[FROST] = 1;
-	}
-	else
-	{
-		alarmOutput[FROST] = 0;
-	}
+//	//	0 - Frost Alarm
+//	if (workingStatus2 & 0x0001)
+//	{
+//		alarmOutput[FROST] = 1;
+//	}
+//	else
+//	{
+//		alarmOutput[FROST] = 0;
+//	}
 
 	//	1 - Degraded mode
 	if (workingStatus2 & 0x0002)
@@ -706,7 +704,7 @@ void showWorkingStatus2(void)
 //					bit12			Unit 3 Present						0x0008														//
 //					bit11			Unit 4 Present						0x0010														//
 //					bit10			Unit 5 Present						0x0020														//
-//					bit9			Unit 6 Present			 			0x0040															//
+//					bit9			Unit 6 Present			 			0x0040														//
 //					bit8			Unit 7 Present					 	0x0080														//
 //					bit7			Unit 8 Present						0x0100														//
 //					bit6			Unit 9 Present						0x0200														//
@@ -888,15 +886,15 @@ void displayChineseAlarm(int alarmIndex)
 			drawIcon(attentionIcon, 16, 2, 3, 5);
 			break;
 
-		case OVER_VOLTAGE:
-			displayChineseTextInOneLine(overVoltageChinese, 0, 3, 0, 3, 22);
-			drawIcon(attentionIcon, 16, 2, 3, 5);
-			break;
-
-		case UNDER_VOLTAGE:
-			displayChineseTextInOneLine(underVoltageChinese, 0, 3, 0, 3, 22);
-			drawIcon(attentionIcon, 16, 2, 3, 5);
-			break;
+//		case OVER_VOLTAGE:
+//			displayChineseTextInOneLine(overVoltageChinese, 0, 3, 0, 3, 22);
+//			drawIcon(attentionIcon, 16, 2, 3, 5);
+//			break;
+//
+//		case UNDER_VOLTAGE:
+//			displayChineseTextInOneLine(underVoltageChinese, 0, 3, 0, 3, 22);
+//			drawIcon(attentionIcon, 16, 2, 3, 5);
+//			break;
 
 		case BAD_BOARD:
 			displayChineseTextInOneLine(badBoardChinese, 0, 5, 0, 3, 22);
@@ -908,12 +906,12 @@ void displayChineseAlarm(int alarmIndex)
 			drawIcon(attentionIcon, 16, 2, 3, 5);
 			break;
 
-		case FROST:
-			displayChineseTextInOneLine(frostAlarmChinese, 0, 5, 0, 1, 22);
-			drawIcon(attentionIcon, 16, 2, 1, 5);
-			displayChineseTextInOneLine(frostAlarmChinese, 6, 11, 0, 3, 22);
-			displayChineseTextInOneLine(frostAlarmChinese, 12, 13, 0, 5, 22);
-			break;
+//		case FROST:
+//			displayChineseTextInOneLine(frostAlarmChinese, 0, 5, 0, 1, 22);
+//			drawIcon(attentionIcon, 16, 2, 1, 5);
+//			displayChineseTextInOneLine(frostAlarmChinese, 6, 11, 0, 3, 22);
+//			displayChineseTextInOneLine(frostAlarmChinese, 12, 13, 0, 5, 22);
+//			break;
 
 		case COIL_TEMP_SENSOR_FAULT:
 			displayChineseTextInOneLine(coilTempSensorFaultChinese, 0, 4, 0, 2, 22);
@@ -1138,248 +1136,6 @@ void enterPasswordDisplayMemory(void)
 	}
 }
 
-/******************************************Helper Routine Used in User Interface Opening*********************************************/
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//																															   	 	//
-//	Function Name			:	displayDigitForConfirmationMessageEnglish													    	//
-//	Returned Value			:	None																						    	//
-//	Passing Parameter		:	digit																						   	 	//
-//			digit			:	number to be display, positive or negative													    	//
-//	Local variables			:	colNumDigit, colNumDecimal, and colNum                                                         		//
-//			colNumDigit		:	The start column position of the highest place (tenth and hundredth) of the digit to be display 	//
-//			colNumDecimal	:	The start column of decimal symbol. 														    	//
-//			colNum			: 	The start column of the degree icon, degree F or degree C									    	//
-//																															    	//
-//	This routine take the digit to be displayed and adjust the space according to the type of digit. Each digit has different  	 	//
-//	spacing number to make them look nice when display after a text message. There are positive and negative numbers which      	//
-//	need to check. It is assumed that the range is from -99 to 999. For positve number, there are three case: 0.0-9.9,          	//
-//	10.0-99.9, and 100-999. Each of these cases involves adjusting the spacing between the text message and digit differently.  	//
-//	For negative number, there are two cases: -1.0 to -9.9 and -10.0 to -99.9. Just like the positive case, spacing is         	 	//
-//	different from one cases to the next. The local variables listing above will be used to adjust to each cases.               	//
-//                                                                                                                              	//
-//	This is only for English language                                                                                           	//
-// 	                                                                                                                            	//
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//void displayDigitForConfirmationMessageEnglish(int digit)
-//{
-//	char colNumDigit;
-//	char colNumDecimal;
-//	char colNum;
-//	negativeDecimalZero = false;
-//	if(digit < 0) //negative temperature
-//	{
-//		//-10.0 to -99.9 range ------------------------------------------------------
-//		if((digit/10) <= -10 && (digit/10) > -100)
-//		{
-//			colNumDigit = 65;
-//			colNumDecimal = colNumDigit+11;
-//			colNum = 90;
-//		}
-//		//-1.0- to -9.9 range -------------------------------------------------------
-//		if((digit/10) < 0 && (digit/10) > -10 )
-//		{
-//			colNumDecimal = colNumDigit+5;
-//			colNum = 82;
-//		}
-//
-//		// -0.1 to -0.9 range -------------------------------------------------------
-//		if (digit/10 == 0)
-//		{
-//			colNumDigit = 80;
-//			negativeDecimalZero = true;
-//			colNumDecimal = 68;
-//			colNum = 85;
-//		}
-//		confirmDigitDisplay = true;
-//		drawIntegerRightAligned(digitCourier2x7, digit/10, 2, 7, 4, colNumDigit);
-//		confirmDigitDisplay = false;
-//		drawCharacter('.', arial14, 4, colNumDecimal);
-//		drawDigit(digitCourier2x7, -digit%10, 2, 7, 4, colNumDecimal+3);
-//	}
-//	else //positive temperature
-//	{
-//		//negativeDecimalZero = false;
-//		_Bool threeDigit = false;
-//		//100 to 999 range -------------------------------------------------------------
-//		if(digit/10 >= 100 && digit/10 < 1000)
-//		{
-//			colNumDigit = 73;
-//			colNum = colNumDigit+5;
-//			colNumDecimal = colNumDigit-3;
-//			threeDigit = true;
-//		}
-//
-//		//10.0 to 99.99 range ---------------------------------------------------------
-//		if(digit/10 >= 10 && digit/10 < 100)
-//		{
-//			colNumDigit = 75;
-//			colNum = colNumDigit+10;
-//			colNumDecimal = colNumDigit-5;
-//		}
-//
-//		//0.0 to 9.9 range ------------------------------------------------------------
-//		if(digit/10 < 10)
-//		{
-//			colNumDigit = 70;
-//			colNumDecimal = colNumDigit-5;
-//			colNum = colNumDecimal+2+10;
-//		}
-//		confirmDigitDisplay = true;
-//		drawIntegerRightAligned(digitCourier2x7, digit/10, 2, 7, 4, colNumDigit);
-//		confirmDigitDisplay = false;
-//		if(!threeDigit)
-//		{
-//			drawCharacter('.', arial14, 4, colNumDecimal);
-//			drawDigit(digitCourier2x7, digit%10, 2, 7, 4, colNumDecimal+2);
-//		}
-//	}
-//	showDegree(4, colNum);
-//}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//																																	//
-//	Function Name		: 	displayDigitForConfirmationMessage															//
-// 	Returned Value		:	None																									//
-//	Passing Parameter	:	page, col, digit																						//
-//			page		:	page to display the digit																				//
-//			col			: 	start column to display the digit																		//
-//			digit		: 	digit to be display																						//
-//																																	//
-//	This routine be used to adjust the spacing between text message and digit. This works the same as the one used for English		//
-//	language. The functionality is the same. However, two more parameters are added. These two parameters are used in figuring 		//
-//	out what page and column to start displaying the digit.																			//
-//																																	//
-//	Page and column paramters are the last page and column used by the text message. 												//
-//																																	//
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//void displayDigitForConfirmationMessageOtherLanguage(int page, int col, int digit)
-//{
-//	char colNumDigit;
-//	char colNumDecimal;
-//	char colNum;
-//	int checkColNum = col;
-//	negativeDecimalZero = false;
-//	if(digit < 0) //negative temperature
-//	{
-//		//-10.0 to -99.9 range ------------------------------------------------------
-//		if((digit/10) <= -10 && (digit/10) > -100 )
-//		{
-//			colNumDigit = col+13;
-//			colNumDecimal = colNumDigit+11;
-//			colNum = colNumDigit+23;
-//			checkColNum = col + 4*7 + 3 + 3 + 3 +8; //all space taken for display of digit number and the degree icon
-//			if(checkColNum > 127)
-//			{
-//				colNumDigit = 14;
-//				colNumDecimal = colNumDigit+12;
-//				colNum = colNumDecimal + 12;
-//				page += 2;
-//			}
-//		}
-//		//-1.0 to -9.9 range -------------------------------------------------------
-//		if((digit/10) < 0 && (digit/10) > -10 )
-//		{
-//			checkColNum = col + 3*7 + 3 + 3 + 3 +8; //all space taken for display of digit number and the degree icon
-//			colNumDigit = col+13;
-//			colNumDecimal = colNumDigit+6;
-//			colNum = colNumDecimal+13;
-//			if(checkColNum > 127)
-//			{
-//				colNumDigit = 13;
-//				colNumDecimal = colNumDigit+6;
-//				colNum = colNumDecimal + 12;
-//				page += 2;
-//			}
-//		}
-//
-//		// -0.1 to -0.9 range -------------------------------------------------------
-//		if (digit/10 == 0)
-//		{
-//			checkColNum = col + 3*7 + 3 + 3 + 3 +8; //all space taken for display of digit number and the degree icon
-//			colNumDigit = col+27;
-//			negativeDecimalZero = true;
-//			colNumDecimal = colNumDigit-12;
-//			colNum = colNumDecimal+14;
-//			if(checkColNum > 127)
-//			{
-//				colNumDigit = 27;
-//				colNumDecimal = colNumDigit-12;
-//				colNum = colNumDecimal + 13;
-//				page +=2;
-//			}
-//		}
-//		confirmDigitDisplay = true;
-//		drawIntegerRightAligned(digitCourier2x7, digit/10, 2, 7, page, colNumDigit);
-//		confirmDigitDisplay = false;
-//		drawCharacter('.', arial14, page, colNumDecimal);
-//		drawDigit(digitCourier2x7, -digit%10, 2, 7, page, colNumDecimal+3);
-//	}
-//	else //positive temperature
-//	{
-//		//negativeDecimalZero = false;
-//		_Bool threeDigit = false;
-//		//100 to 999 range -------------------------------------------------------------
-//		if(digit/10 >= 100 && digit/10 < 1000)
-//		{
-//			checkColNum = col + 3*7 + 3 + 3 +8; //all space taken for display of digit number and the degree icon
-//			colNumDigit = col+19;
-//			colNum = colNumDigit+7;
-//			colNumDecimal = colNumDigit-3;
-//			threeDigit = true;
-//			if(checkColNum >127)
-//			{
-//				colNumDigit = 20;
-//				colNumDecimal = colNumDigit-5;
-//				colNum = colNumDecimal+10;
-//				page += 2;
-//			}
-//		}
-//
-//		//10.0 to 99.9 range ---------------------------------------------------------
-//		if(digit/10 >= 10 && digit/10 < 100)
-//		{
-//			checkColNum = col + 3*7 + 3 + 3 + 3 +8; //all space taken for display of digit number and the degree icon
-//			colNumDigit = col+23;
-//			colNum = colNumDigit+10;
-//			colNumDecimal = col+18;
-//			if(checkColNum >127)
-//			{
-//				colNumDigit = 24;
-//				colNumDecimal = colNumDigit-4;
-//				colNum = colNumDecimal+11;
-//				page += 2;
-//			}
-//		}
-//
-//		//0.0 to 9.9 range ------------------------------------------------------------
-//		if(digit/10 < 10)
-//		{
-//			checkColNum = col + 2*7 + 3 + 3 + 3 +8; //all space taken for display of digit number and the degree icon
-//			colNumDigit = col+17;
-//			colNumDecimal = colNumDigit-5;
-//			colNum = colNumDecimal+2+10;
-//			if(checkColNum >127)
-//			{
-//				colNumDigit = 17;
-//				colNumDecimal = colNumDigit-5;
-//				colNum = colNumDecimal+2+10;
-//				page += 2;
-//			}
-//		}
-//		confirmDigitDisplay = true;
-//		drawIntegerRightAligned(digitCourier2x7, digit/10, 2, 7, page, colNumDigit);
-//		confirmDigitDisplay = false;
-//		if(!threeDigit)
-//		{
-//			drawCharacter('.', arial14, page, colNumDecimal);
-//			drawDigit(digitCourier2x7, digit%10, 2, 7, page, colNumDecimal+3);
-//		}
-//	}
-//	showDegree(page, colNum);
-//}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //																																	//
@@ -1423,10 +1179,6 @@ void doScrolling(const unsigned char textZero[], const unsigned char textOne[], 
 				scrollingIndex[3] = 0;
 
 			}
-
-//			for(unsigned int index = scrollingIndex[3]; index < 120; index++){
-//				s
-//			}
 
 		}
 		displayTextInOneLineScrolling(textZero, arial14, 0, 10, scrollingIndex[3], 1);
@@ -1583,76 +1335,6 @@ static _Bool isEmpty(int size){
 	return size > 0 ? true:false;
 }
 
-void catChinese(const char fontTable1[], int start1, int numOfChar1, const char fontTable2[], int start2, int numOfChar2, int type, int value){
-	int a, b;
-	int size = (numOfChar1 - start1 ) + (numOfChar2 - start2 ) + 10; // "\0" at the end
-	//Copy the first part
-	char totalTable[size], prelim[10];
-	int index = numOfChar1 - start1;
-	for(int i = 0; i < index; i++){
-		totalTable[i] = fontTable1[i];
-	}
-
-	//Copy the second part
-	if(!isEmpty(numOfChar2 - start2)){
-		for(int j = sizeof(fontTable1); j < sizeof(fontTable2);  j++){
-			if(index < numOfChar2){
-				totalTable[j] = fontTable2[index];
-				index++;
-			}else{
-				break;
-			}
-
-		}
-	}
-
-	switch(type)
-		{
-			case TEMPERATURE:
-				a = value/10;
-				b = value%10;
-				if(value < 0)
-				{
-					if(value > 999)	{sprintf(prelim, "-%d  ", a);}
-					else			{sprintf(prelim, "-%d.%d  ", a, b);}
-				}
-				else
-				{
-					if(value > 999)	{sprintf(prelim, "%d  ", a);}
-					else			{sprintf(prelim, "%d.%d  ", a, b);}
-				}
-				break;
-
-			case MIN_SEC:
-				a = value/60;
-				b = value%60;
-				if(b < 10)	{sprintf(prelim, "%dm 0%ds ", a, b);}
-				else		{sprintf(prelim, "%dm %ds ", a, b);}
-				break;
-
-			case HOUR:
-				sprintf(prelim, "%d h ", value);
-				break;
-
-			case MIN_SEC_COLON:
-				a = value/60;
-				b = value%60;
-				if(b < 10)	{sprintf(prelim, "%d:0%d ", a, b);}
-				else		{sprintf(prelim, "%d:%d ", a, b);}
-				break;
-
-			case INTEGER:
-				sprintf(prelim, "%d ", value);
-				break;
-
-			default: break;
-		}
-		//Need to convert the integer into chinese font
-
-
-	if(type == 1){showDegree(pgg, ncol-3);}
-
-}
 
 /******************************************Helper Routine Used in User Interface Closing*********************************************/
 
@@ -1712,37 +1394,6 @@ void displayChineseUserInterface(int lineNumber)
 
 			default: break;
 		}
-//	}
-//	else //heater not present
-//	{
-//		switch (lineNumber)
-//		{
-//			case 1: case 2: case 3:
-//			// Line 1: Cooling Set Point
-//			displayChineseTextInOneLine(userInterfaceChinese, 4, 8, 0, 2, MENU_ITEM_START_COLUMN);
-//			// Line 2: Cooling Differential
-//			displayChineseTextInOneLine(userInterfaceChinese, 9, 12, 0, 4, MENU_ITEM_START_COLUMN);
-//			// Line 3: High Temp Alarm
-//			displayChineseTextInOneLine(userInterfaceChinese, 22, 25, 0, 6, MENU_ITEM_START_COLUMN);
-//			break;
-//
-//			case 4: case 5: case 6:
-//			// Line 4: Low Temp Alarm
-//			displayChineseTextInOneLine(userInterfaceChinese, 26, 29, 0, 2, MENU_ITEM_START_COLUMN);
-//			// Line 5: Temp Scale
-//			displayChineseTextInOneLine(userInterfaceChinese, 30, 33, 0, 4, MENU_ITEM_START_COLUMN);
-//			// Line 6: Hysteresis
-//			displayChineseTextInOneLine(userInterfaceChinese, 34, 35, 0, 6, MENU_ITEM_START_COLUMN);
-//			break;
-//
-//			case 7: case 8:
-//			// Line 7: Language
-//			displayChineseTextInOneLine(userInterfaceChinese, 36, 39, 0, 2, MENU_ITEM_START_COLUMN);
-//			// Line 8: Password
-//			displayChineseTextInOneLine(userInterfaceChinese, 40, 41, 0, 4, MENU_ITEM_START_COLUMN);
-//			break;
-//		}
-//	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1761,8 +1412,7 @@ void userInterfaceDisplayMemory(void)
 	clearOneLine(6);
 	if(currentLanguage != CHINESE)
 	{
-//		if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F) //heater present
-//		{
+
 			switch (currentPosition.lineNumber)
 			{
 				case 1: case 2: case 3:
@@ -1775,25 +1425,7 @@ void userInterfaceDisplayMemory(void)
 					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_Passcode], "\0", "\0"); break;
 				default: break;
 			}
-//		}
-//		else //heater not present, don't display heating setpoint and heating differential in user interface
-//		{
-//			if( notHeaterDisplay && (currentPosition.lineNumber >= 5 && currentPosition.lineNumber <= 10))
-//			{
-//				currentPosition.lineNumber -= 2; //have to do this unskip the case 3 when pressed OK button after adjustment in each menu in user interface
-//				notHeaterDisplay = false;
-//			}
-//			switch (currentPosition.lineNumber)
-//			{
-//				case 1: case 2: case 3:
-//					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_CoolingSetPoint], currentTextTable[TEXT_INDEX_CoolingDifferential], currentTextTable[TEXT_INDEX_HighTempAlarm]); break;
-//				case 4: case 5: case 6:
-//					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_LowTempAlarm], currentTextTable[TEXT_INDEX_TemperatureScale], currentTextTable[TEXT_INDEX_Hysteresis]); break;
-//				case 7: case 8:
-//					doScrolling(currentTextTable[TEXT_INDEX_UserInterface], currentTextTable[TEXT_INDEX_Language], currentTextTable[TEXT_INDEX_Passcode], "\0"); break;
-//				default: break;
-//			}
-//		}
+
 	}
 	else
 	{ //CHINESE
@@ -2025,11 +1657,8 @@ void heatingDifferentialDisplayMemory(void)
 			highlightOneLine(0);
 			if (currentLanguage != CHINESE)
 			{
-				char lineNumTemp = 4; // heater not present
-//				if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-//				{
-					lineNumTemp = 6;
-//				}
+				char lineNumTemp = 6; // heater present
+
 				doScrolling(currentTextTable[TEXT_INDEX_HeatingDifferential], "\0", "\0", "\0");
 			}
 			else
@@ -2082,11 +1711,8 @@ void highTempAlarmDisplayMemory(void)
 		highlightOneLine(0);
 		if (currentLanguage != CHINESE)
 		{
-			char lineNumTemp = 3; // heater not present
-//			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-//			{
-				lineNumTemp = 5;
-//			}
+			char lineNumTemp = 5; // heater present
+
 			doScrolling(currentTextTable[TEXT_INDEX_HighTempAlarm], "\0", "\0", "\0");
 		}
 		else
@@ -2139,11 +1765,8 @@ void lowTempAlarmDisplayMemory(void)
 		highlightOneLine(0);
 		if(currentLanguage != CHINESE)
 		{
-			char lineNumTemp = 4; // heater not present
-//			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-//			{
-				lineNumTemp = 6;
-//			}
+			char lineNumTemp = 6; // heater present
+
 			doScrolling(currentTextTable[TEXT_INDEX_LowTempAlarm], "\0", "\0", "\0");
 		}
 		else
@@ -2218,11 +1841,8 @@ void tempScaleDisplayMemory(void)
 		highlightOneLine(0);
 		if (currentLanguage != CHINESE)
 		{
-			char lineNumTemp = 5; // heater not present
-//			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-//			{
-				lineNumTemp = 7;
-//			}
+			char lineNumTemp = 7; // heater present
+
 			doScrolling(currentTextTable[TEXT_INDEX_TemperatureScale], currentTextTable[TEXT_INDEX_Fahrenheit], currentTextTable[TEXT_INDEX_Celsius], "\0");
 		}
 		else
@@ -2252,15 +1872,11 @@ void hysteresisDisplayMemory(void)
 	char temp[100];
 	if (parameterIsSet && showValidationScreen)
 	{
-		if (modbus_rw_coil_rcv[COOL_HYSTERESIS/8] & COOL_HYSTERESIS_F) // Negative
+		if (modbus_rw_coil_rcv[COOL_HYSTERESIS/8] & COOL_HYSTERESIS_F) // Negative hysteresis
 		{
 			switch(currentLanguage)
 			{
 				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
-//					cat(currentTextTable[TEXT_INDEX_DifferentialIsSetTo],
-//						currentTextTable[TEXT_INDEX_Negative],
-//						NOVALUE,
-//						NOVALUE);
 					strcpy(temp, currentTextTable[TEXT_INDEX_DifferentialIsSetTo]);
 					strcat(temp,currentTextTable[TEXT_INDEX_Negative]);
 					displayTextInMultipleLines(temp, arial14, &pgg, &ncol, false);
@@ -2274,14 +1890,10 @@ void hysteresisDisplayMemory(void)
 			}
 		}
 		else
-		{
+		{ //Positive hysteresis
 			switch(currentLanguage)
 			{
 				case ENGLISH: case FRENCH: case GERMAN: case SPANISH: case ITALIAN:
-//					cat(currentTextTable[TEXT_INDEX_DifferentialIsSetTo],
-//						currentTextTable[TEXT_INDEX_Positive],
-//						NOVALUE,
-//						NOVALUE);
 					strcpy(temp, currentTextTable[TEXT_INDEX_DifferentialIsSetTo]);
 					strcat(temp,currentTextTable[TEXT_INDEX_Positive]);
 					displayTextInMultipleLines(temp, arial14, &pgg, &ncol, false);
@@ -2300,11 +1912,8 @@ void hysteresisDisplayMemory(void)
 		highlightOneLine(0);
 		if (currentLanguage != CHINESE)
 		{
-			char lineNumTemp = 6; // heater not present
-//			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-//			{
-				lineNumTemp = 8;
-//			}
+			char lineNumTemp = 8; // heater present
+
 			doScrolling(currentTextTable[TEXT_INDEX_Hysteresis], currentTextTable[TEXT_INDEX_Positive], currentTextTable[TEXT_INDEX_Negative], "\0");
 		}
 		else
@@ -2355,11 +1964,9 @@ void languageDisplayMemory(void)
 		highlightOneLine(0);
 		if (currentLanguage != CHINESE)
 		{
-			char lineNumTemp = 7; // heater not present
-//			if(modbus_rw_coil_rcv[HEATER_PRESENT/8] & HEATER_PRESENT_F)//heater present
-//			{
-				lineNumTemp = 9;
-//			}
+			char lineNumTemp = 9; // heater present
+
+
 			displayTextInOneLineHighlighted(currentTextTable[TEXT_INDEX_Language], arial14, 0, MENU_ITEM_START_COLUMN);
 		}
 		else
@@ -2500,14 +2107,13 @@ void displayChineseSystemInterface(int lineNumber)
 		break;
 
 		case 7: case 8: case 9:
-		//Line 1: Evapor Output Temp Sensor
+		//Line 7: Evapor Output Temp Sensor
 		displayChineseTextInOneLine(systemInterfaceChinese,33,37,0,2,MENU_ITEM_START_COLUMN);
-		//Line 2:
+		//Line 8:
 		displayChineseTextInOneLine(Eva_out_2,0,5,0,4,MENU_ITEM_START_COLUMN);
-		// Line 3: System Settings
+		// Line 9: System Settings
 		displayChineseTextInOneLine(systemInterfaceChinese, 29, 32, 0, 6, MENU_ITEM_START_COLUMN);
 		break;
-
 
 		default: break;
 	}
@@ -2819,9 +2425,6 @@ void differential2DisplayMemory(void)
 		{
 			displayChineseTextInOneLine(leadLagControlModeChinese, 6, 8, 0, 2, 10); 	//differential two
 			displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, MENU_ITEM_START_COLUMN);	//is set to
-//			int digit = modbus_rw_reg_rcv[COOLING_DIF_2].ivalue;
-//			drawDigit(digitCourier2x7, digit/10, 2, 7, 4, 60);
-//			drawDigit(digitCourier2x7, digit%10, 2, 7, 4, 67);
 			int num = modbus_rw_reg_rcv[COOLING_DIF_2].ivalue;
 			char col = 35;
 			if(num)
@@ -2927,11 +2530,6 @@ void numberOfUnitsDisplayMemory(void)
 				currentTextTable[TEXT_INDEX_IsSetTo],
 				INTEGER,
 				modbus_rw_reg_rcv[GROUP_CONTROL_SIZE].ivalue);
-//			displayTextInOneLine(currentTextTable[TEXT_INDEX_NumberOfUnits], arial14, 1, 10);
-//			displayTextInOneLine(currentTextTable[TEXT_INDEX_IsSetTo], arial14, 3, 10);
-//			int digit = modbus_rw_reg_rcv[GROUP_CONTROL_SIZE].ivalue;
-//			drawDigit(digitCourier2x7, digit/10, 2, 7, 5, 10);
-//			drawDigit(digitCourier2x7, digit%10, 2, 7, 5, 17);
 		}
 		else
 		{
@@ -3207,41 +2805,6 @@ void compressorRestartDelayDisplayMemory(void)
 		    	   Thus, put the function for displaying currentTextTable after number to avoid the last char in the currentTextTable to be cleared.
 				displayChineseTextInOneLine(confirmationTextChinese, 0, 2, 0, 4, 10);
 				break;
-//
-//
-//				//Délai de redémarrage du compresseur est réglé sur 3 min 30 sec
-//				displayTextInMultipleLines(frenchText[TEXT_INDEX_CompRestartDelayIsSetTo], arial14, &pgg, &ncol, false);
-//		    	//displayTextInOneLine("Comp Restart Delay", arial14, 2, 5);
-//		    	drawIntegerLeftAligned(digitCourier2x7, modbus_rw_reg_rcv[COMP_DELAY_TIME].ivalue/60, 2, 7, 6, 5);
-//		    	drawIntegerLeftAligned(digitCourier2x7, modbus_rw_reg_rcv[COMP_DELAY_TIME].ivalue%60, 2, 7, 6, 35);
-//		    	displayTextInOneLine("min", arial14, 6, 15);
-//		    	displayTextInOneLine("sec", arial14, 6, 55);
-//				break;
-//
-//
-//				displayTextInOneLine(germanText[TEXT_INDEX_CompRestartDelay], arial14, 0, 3);
-//				displayTextInOneLine("Neustart des Komp", arial14, 2, 3);
-//				displayTextInOneLine("ist eingestellt auf", arial14, 4, 3);
-//		    	drawIntegerLeftAligned(digitCourier2x7, modbus_rw_reg_rcv[COMP_DELAY_TIME].ivalue/60, 2, 7, 6, 3);
-//		    	drawIntegerLeftAligned(digitCourier2x7, modbus_rw_reg_rcv[COMP_DELAY_TIME].ivalue%60, 2, 7, 6, 35);
-//		    	displayTextInOneLine("min", arial14, 6, 15);
-//		    	displayTextInOneLine("sec", arial14, 6, 55);
-//				break;
-//
-//
-//		    	displayTextInMultipleLines(spanishText[TEXT_INDEX_CompRestartDelayIsSetTo], arial14, &pgg, &ncol, false);
-//		    	drawIntegerLeftAligned(digitCourier2x7, modbus_rw_reg_rcv[COMP_DELAY_TIME].ivalue/60, 2, 7, pgg, ncol+3);
-//		    	drawIntegerLeftAligned(digitCourier2x7, modbus_rw_reg_rcv[COMP_DELAY_TIME].ivalue%60, 2, 7, pgg, ncol+6+7+3+16);
-//		    	displayTextInOneLine("min", arial14, pgg, ncol+6+7);
-//		    	displayTextInOneLine("sec", arial14, pgg, ncol+6+7+3+16+7+7+3);
-//				break;
-//
-//
-//				displayTextInMultipleLines(italianText[TEXT_INDEX_CompRestartDelayIsSetTo], arial14, &pgg, &ncol, false);
-//				drawIntegerLeftAligned(digitCourier2x7, modbus_rw_reg_rcv[COMP_DELAY_TIME].ivalue/60, 2, 7, pgg, ncol+3);
-//				drawIntegerLeftAligned(digitCourier2x7, modbus_rw_reg_rcv[COMP_DELAY_TIME].ivalue%60, 2, 7, pgg, ncol+6+7+3+16);
-//				displayTextInOneLine("min", arial14, pgg, ncol+6+7);
-//				displayTextInOneLine("sec", arial14, pgg, ncol+6+7+3+16+7+7+3);
 
 			default: break;
 		}
@@ -3612,8 +3175,7 @@ void hpcFanOffDisplayMemory(void)
 		displayChineseTextInOneLineHighlighted(systemSettingsChinese, 28, 35, 0, 0, 10);
 	}
 	drawIntegerRightAligned(digitCalibri4x15, modbus_ero_reg_rcv[HPC_DEACTIVATE].ivalue/10, 4, 15, 3, 80);
-	//drawDigit(digitCalibri4x15, DECIMAL_POINT_INDEX, 4, 15, 3, 60);
-	//drawIntegerRightAligned(digitCalibri4x15, (numDigit%10)/10, 4, 15, 3, 80);
+
 	showDegree(3, 80);
 }
 
@@ -3637,17 +3199,6 @@ void showVersionNumber(int versionNumber, char page, char col)
 {
 	unsigned char minor = versionNumber & 0xff;
 	unsigned char major = (versionNumber & 0xff00) >> 8;
-
-	// Note: Ascii code for digit 0-9 is used. Thus the range is from 48 to 57 (or 30h to 39h)(inclusive) for 0-9 and 97 to 122 (or 61h to 7Ah)(inclusive) for a-z
-	/*if ( (major<48) || ((major>57) && (major<97)) || (major>122) )
-	{
-		major = 45; // ascii code for '-'
-	}
-
-	if ( (minor<48) || ((minor>57) && (minor<97)) || (minor>122) )
-	{
-		minor = 45; // ascii code for '-'
-	}*/
 
 	drawCharacter(major, arial14, page, col);
 	drawCharacter('.', arial14, page, endOfMajorColumn-1);
@@ -3688,19 +3239,7 @@ void aboutMenuDisplayMemory(void)  //About tab in main menu
 
 		showVersionNumber(modbus_ro_reg_rcv[HARDWARE_VERSION].ivalue, 0, pgOneCol+2);
 		showVersionNumber(modbus_ro_reg_rcv[FIRMWARE_VERSION].ivalue, 2, pgTwoCol+3);
-		/*if(justClickOK)
-		{
-			justClickOK = FALSE;
-			clearArea(2,pgTwoCol+2, 3, 127);
-			showVersionNumber(0x617a +cc - bb, 2, pgTwoCol+2);//+ cc
-			bb += 1;
-			if(bb == 65)
-			{
-				cc += 0x100;
-				bb = 0;
-			}
 
-		}*/
 		showVersionNumber(modbus_wo_reg_snd[DISPLAY_HARDWARE_REV].ivalue, 4, pgThreeCol+2);
 		showVersionNumber(modbus_wo_reg_snd[DISPLAY_FIRMWARE_REV].ivalue, 6, pgFourCol+2);
 	}
@@ -3716,18 +3255,7 @@ void aboutMenuDisplayMemory(void)  //About tab in main menu
 		showVersionNumber(modbus_wo_reg_snd[DISPLAY_HARDWARE_REV].ivalue, 4, 80);
 		showVersionNumber(modbus_wo_reg_snd[DISPLAY_FIRMWARE_REV].ivalue, 6, 80);
 	}
-	/*if(justClickOK)
-	{
-		justClickOK = FALSE;
-		showVersionNumber(modbus_ro_reg_rcv[HARDWARE_VERSION].ivalue, 0, 112);
-		showVersionNumber(modbus_ro_reg_rcv[FIRMWARE_VERSION].ivalue, 2, 112);
-		showVersionNumber(modbus_wo_reg_snd[DISPLAY_HARDWARE_REV].ivalue, 4, 112);
-		showVersionNumber(modbus_wo_reg_snd[DISPLAY_FIRMWARE_REV].ivalue, 6, 112);
-	}*/
-	/*showVersionNumber(modbus_ro_reg_rcv[HARDWARE_VERSION].ivalue, 0, pgOneCol+3);
-	showVersionNumber(modbus_ro_reg_rcv[FIRMWARE_VERSION].ivalue, 2, pgTwoCol+3);
-	showVersionNumber(modbus_wo_reg_snd[DISPLAY_HARDWARE_REV].ivalue, 4, pgThreeCol+3);
-	showVersionNumber(modbus_wo_reg_snd[DISPLAY_FIRMWARE_REV].ivalue, 6, pgFourCol+3);*/
+
 }
 void displayBootloadMessage()
 {
